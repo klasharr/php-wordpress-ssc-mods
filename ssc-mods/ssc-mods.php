@@ -81,12 +81,12 @@ function ssc_mods_get_results($url, $count = SSC_MODS_RESULTS_DEFAULT_COUNT){
 	}
 
 	$i = 0;
-	$out = '<h3>Recent Results</h3><ol>';
+	$out = '<ol>';
 	foreach($data->data as $item){
 		if( $i === $count) break;
 		$out.= sprintf('<li><a href="%s">%s</a></li>',
 			esc_url($item->link),
-			esc_html($item->friendly_file_name)
+			esc_html($item->friendly_path)
 		);
 		$i ++;
 	}
