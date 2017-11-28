@@ -1,11 +1,16 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 class SSCResults {
 
 	const RESULTS_DEFAULT_COUNT = 5;
 	const RESULTS_WP_ERROR_CODE = 239;
 
 	private static $results;
+
+	private $more_link;
+	private $more_text;
 
 	public function __construct() {
 	}
@@ -22,11 +27,15 @@ class SSCResults {
 			'url'    => null,
 			'count'  => self::RESULTS_DEFAULT_COUNT,
 			'format' => 'concise',
+			'more_link' => null,
+			'more_text' => 'See all results',
 		), $args );
 
 		$url    = $atts['url'];
 		$count  = (int) $atts['count'];
 		$format = $atts['format'];
+		$this->more_link = $atts['more_link'];
+		$this->more_text = $atts['more_text'];
 
 		if ( empty( $url ) || ! is_string( $url ) ) {
 			return 'Error : no url value passed to shortcode';
@@ -46,7 +55,7 @@ class SSCResults {
 			return sprintf( 'Error : %s', $data->get_error_message() );
 		}
 
-		return $this->getOutput();
+		$this->displayShortCode();
 	}
 
 
@@ -114,22 +123,12 @@ class SSCResults {
 		return $response->data;
 	}
 
-	function getOutput() {
+	function displayShortCode() {
 
-		if ( ! is_array( self::$results ) ) {
-			return "<!-- no results -->\n";
-		}
-
-		$out = '<ol>';
-		foreach ( self::$results as $item ) {
-			$out .= sprintf( '<li><a href="%s">%s</a></li>',
-				esc_url( $item->link ),
-				esc_html( $item->friendly_path )
-			);
-		}
-		$out .= '</ol>';
-
-		return $out;
+		ssc_mods_get_template( 'results-list-full.php', array(
+			'results' => self::$results,
+			'more_link' => $this->more_link,
+			'more_text' => $this->more_text )
+		);
 	}
-
 }
