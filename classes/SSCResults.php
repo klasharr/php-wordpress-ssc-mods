@@ -3,24 +3,52 @@
 class SSCResults {
 
 	const RESULTS_DEFAULT_COUNT = 5;
-	const RESULTS_WP_ERROR_CODE_CONSTRUCTOR_ERROR = 240;
 	const RESULTS_WP_ERROR_CODE = 239;
 
-	private $results;
+	private static $results;
+
+	public function __construct() {
+	}
 
 	/**
-	 * SSCResults constructor.
+	 * @todo different formats for main page content and sidebar, or just make a widget
 	 *
-	 * @param $url
+	 * @param $args
+	 * @param null $content
 	 */
-	public function __construct( $url ) {
+	function getShortCode( $args, $content = null ) {
+
+		$atts = shortcode_atts( array(
+			'url'    => null,
+			'count'  => self::RESULTS_DEFAULT_COUNT,
+			'format' => 'concise',
+		), $args );
+
+		$url    = $atts['url'];
+		$count  = (int) $atts['count'];
+		$format = $atts['format'];
 
 		if ( empty( $url ) || ! is_string( $url ) ) {
-			return new WP_Error( self::RESULTS_WP_ERROR_CODE_CONSTRUCTOR_ERROR, '$url must be called with a valid URL' );
+			return 'Error : no url value passed to shortcode';
 		}
 
-		return $this->get( $url );
+		if ( empty( $count ) || $count < 0 ) {
+			return 'Error : the value of count passed to the shortcode must be > 0';
+		}
+
+		if ( ! in_array( $format, array( 'concise', 'full' ) ) ) {
+			return 'Error : the value of format passed to the shortcode must be concise or full';
+		}
+
+		$data = $this->get( $url, $count );
+
+		if ( $data instanceof WP_Error ) {
+			return sprintf( 'Error : %s', $data->get_error_message() );
+		}
+
+		return $this->getOutput();
 	}
+
 
 	/**
 	 * @param $url
@@ -28,81 +56,72 @@ class SSCResults {
 	 * @todo check for existence of cache plugins and if absent, cache here.
 	 *
 	 */
-	private function get( $url ) {
+	private function get( $url, $count ) {
 
-		if ( ! empty( $this->results ) ) {
-			return $this->results;
+		if ( ! empty( self::$results ) ) {
+			return self::$results;
 		}
 
-		// @todo cache here
+		// @todo optionally cache here
 		$response = $this->validateResponse(
 			wp_remote_get( $url )
 		);
 
-		if ( 1 === $response['error'] ) {
-			$this->results = new WP_Error( self::RESULTS_WP_ERROR_CODE, $response['data'] );
+		if ( $response instanceof WP_Error ) {
+			return $response;
 		}
 
-		$this->results = array_slice( $response['data'], 0, self::RESULTS_DEFAULT_COUNT );
+		self::$results = array_slice( $response, 0, $count );
 
-		return $this->results;
-	}
-
-	/**
-	 * @param $error string
-	 */
-	private function error( $message ) {
-		return array(
-			'error' => 1,
-			'data'  => $message
-		);
+		return true;
 	}
 
 
 	private function validateResponse( $raw_response ) {
 
 		if ( $raw_response instanceof WP_Error ) {
-			return $this->error(
-				sprintf( 'Error: %s', $raw_response->get_error_message() )
-			);
+			return $raw_response;
+		}
+
+		// Possibly allow a 301
+		if( isset( $raw_response['response']['code'] ) && !in_array($raw_response['response']['code'], array( 200 ) ) ) {
+			return new WP_Error(
+				self::RESULTS_WP_ERROR_CODE,
+				sprintf('error code %d returned from request', $raw_response['response']['code'] ) );
 		}
 
 		if ( is_array( $raw_response ) ) {
 			$body = $raw_response['body'];
 			if ( empty( $body ) ) {
-				return $this->error( 'Error 2 : empty response' );
+				return new WP_Error( self::RESULTS_WP_ERROR_CODE, 'empty response' );
 			}
 		}
 
 		$response = json_decode( $body );
+
 		if ( ! empty( $response->error ) || ! in_array( (int) $response->error, array( 0, 1 ) ) ) {
-			return $this->error( 'Error 3 : invalid response format' );
+			return new WP_Error( self::RESULTS_WP_ERROR_CODE, 'invalid response format' );
 		}
 
 		if ( 1 === (int) $response->error ) {
-			return $this->error(
-				sprintf( 'Error 4: %s', $response->data )
-			);
+			return new WP_Error( self::RESULTS_WP_ERROR_CODE, $response->data );
 		}
 
 		if ( ! is_array( $response->data ) ) {
-			return $this->error( 'Error 5 : invalid response format' );
+			return new WP_Error( self::RESULTS_WP_ERROR_CODE, 'invalid response format' );
 		}
 
-		return array(
-			'error' => 0,
-			'data'  => $response->data
-		);
+		return $response->data;
 	}
 
 	function getOutput() {
 
-		if ( ! is_array( $this->results ) ) {
-			return $this->error( 'Error 6 : incorrect' )
+		if ( ! is_array( self::$results ) ) {
+			return "<!-- no results -->\n";
 		}
 
 		$out = '<ol>';
-		foreach ( $this->results as $item ) {
+		foreach ( self::$results as $item ) {
 			$out .= sprintf( '<li><a href="%s">%s</a></li>',
 				esc_url( $item->link ),
 				esc_html( $item->friendly_path )
@@ -112,5 +131,5 @@ class SSCResults {
 
 		return $out;
 	}
-	
+
 }

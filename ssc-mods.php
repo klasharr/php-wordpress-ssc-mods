@@ -12,9 +12,6 @@
 define( 'SSC_MODS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'SSC_MODS_PLUGIN_FILE', __FILE__ );
 
-include_once( SSC_MODS_PLUGIN_DIR . 'inc/data.php' );
 include_once( SSC_MODS_PLUGIN_DIR . 'inc/shortcodes.php' );
-include_once( SSC_MODS_PLUGIN_DIR . 'inc/display.php' );
-
 
 
