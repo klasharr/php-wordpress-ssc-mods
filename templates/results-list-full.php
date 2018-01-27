@@ -1,9 +1,12 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 if ( ! is_array( $results ) ) {
 	echo "<!-- no results -->\n";
+
 	return;
 }
 

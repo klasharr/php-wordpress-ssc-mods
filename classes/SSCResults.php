@@ -1,6 +1,8 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 class SSCResults {
 
@@ -24,16 +26,16 @@ class SSCResults {
 	function getShortCode( $args, $content = null ) {
 
 		$atts = shortcode_atts( array(
-			'url'    => null,
-			'count'  => self::RESULTS_DEFAULT_COUNT,
-			'format' => 'concise',
+			'url'       => null,
+			'count'     => self::RESULTS_DEFAULT_COUNT,
+			'format'    => 'concise',
 			'more_link' => null,
 			'more_text' => 'See all results',
 		), $args );
 
-		$url    = $atts['url'];
-		$count  = (int) $atts['count'];
-		$format = $atts['format'];
+		$url             = $atts['url'];
+		$count           = (int) $atts['count'];
+		$format          = $atts['format'];
 		$this->more_link = $atts['more_link'];
 		$this->more_text = $atts['more_text'];
 
@@ -93,10 +95,10 @@ class SSCResults {
 		}
 
 		// Possibly allow a 301
-		if( isset( $raw_response['response']['code'] ) && !in_array($raw_response['response']['code'], array( 200 ) ) ) {
+		if ( isset( $raw_response['response']['code'] ) && ! in_array( $raw_response['response']['code'], array( 200 ) ) ) {
 			return new WP_Error(
 				self::RESULTS_WP_ERROR_CODE,
-				sprintf('error code %d returned from request', $raw_response['response']['code'] ) );
+				sprintf( 'error code %d returned from request', $raw_response['response']['code'] ) );
 		}
 
 		if ( is_array( $raw_response ) ) {
@@ -126,9 +128,10 @@ class SSCResults {
 	function displayShortCode() {
 
 		ssc_mods_get_template( 'results-list-full.php', array(
-			'results' => self::$results,
-			'more_link' => $this->more_link,
-			'more_text' => $this->more_text )
+				'results'   => self::$results,
+				'more_link' => $this->more_link,
+				'more_text' => $this->more_text
+			)
 		);
 	}
 }
