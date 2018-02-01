@@ -35,6 +35,8 @@ function ssc_mods_display_sailing_programme( $content ) {
 			$contentParser  = new ContentParser( $content, $sailType, new RaceSeries, $safetyTeams );
 			$eventsData = $contentParser->getData( $sailFilter );
 
+			// add another validation step here.
+
 		} catch ( Exception $e ) {
 			return  '<strong>Exception: ' . $e->getMessage() . ' File:' . $e->getFile() . ', Line: ' . $e->getLine() . '</strong><br/>';
 		}

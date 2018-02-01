@@ -2,10 +2,15 @@
 
 /**
  * Class EventDTO
+ *
+ * http://php.net/manual/en/function.date.php
+ *
+ * @todo get this date format into some config setting.
  */
 class EventDTO {
 
-	const INPUT_DATE_FORMAT = 'n/j/Y';
+
+	const INPUT_DATE_FORMAT = 'j/n/Y';
 	const OUTPUT_DATE_FORMAT = 'j/n/Y';
 
 	/**
