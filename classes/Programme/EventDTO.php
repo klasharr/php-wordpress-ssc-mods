@@ -66,6 +66,12 @@ class EventDTO {
 	 */
 	private $CSVRowData;
 
+
+	/**
+	 * @var bool
+	 */
+	private $isThursOrSunRace = false;
+
 	/**
 	 * @var array
 	 */
@@ -144,7 +150,6 @@ class EventDTO {
 	function __construct( $line, array $CSVRowData, SailType $sailType, RaceSeries $raceSeries, SafetyTeams $safetyTeams ) {
 
 		if ( count( $CSVRowData ) != 7 ) {
-			prr($CSVRowData);
 			throw new Exception( 'Line ' . $line . ' does not have seven columns' );
 		}
 
@@ -257,6 +262,18 @@ class EventDTO {
 	}
 
 	/**
+	 * @return string
+	 *
+	 * @todo make configurable days
+	 */
+	public function isThursOrSunRace(){
+		if(in_array( $this->day, array( 'Thu', 'Sun' ) ) ){
+			$this->isThursOrSunRace = true;
+			return true;
+		}
+	}
+
+	/**
 	 * @param string $note
 	 */
 	public function setNote( $note ) {
@@ -348,7 +365,17 @@ class EventDTO {
 	 * @return string
 	 */
 	public function getTeam() {
-		return ! empty( $this->team ) ? $this->team : "&nbsp;";
+		return ! empty( $this->team ) ? $this->team : false;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isEventForHouseDuty(){
+		return (
+			!empty(trim($this->team ) ) &&
+			$this->isThursOrSunRace()
+		);
 	}
 
 	/**
@@ -410,5 +437,11 @@ class EventDTO {
 			'team'            => $this->getTeam(),
 			'note'            => $this->getNote(),
 		);
+	}
+
+	public function __toString() {
+
+		return $this->getDay() . ', ' . $this->getDate() . ', '. $this->getEvent() . ', ' . $this->getTeam();
+
 	}
 }
