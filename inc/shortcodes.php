@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 include_once( SSC_MODS_PLUGIN_DIR . 'classes/SSCResults.php' );
 include_once( SSC_MODS_PLUGIN_DIR . 'classes/SSCProgramme.php' );
 

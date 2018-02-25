@@ -1,7 +1,10 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
-require_once( SSC_MODS_PLUGIN_DIR.'/classes/CLI/HouseDuties.php' );
+require_once( SSC_MODS_PLUGIN_DIR . '/classes/CLI/HouseDuties.php' );
 
 $instance = new HouseDuties();
 

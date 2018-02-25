@@ -266,9 +266,10 @@ class EventDTO {
 	 *
 	 * @todo make configurable days
 	 */
-	public function isThursOrSunRace(){
-		if(in_array( $this->day, array( 'Thu', 'Sun' ) ) ){
+	public function isThursOrSunRace() {
+		if ( in_array( $this->day, array( 'Thu', 'Sun' ) ) ) {
 			$this->isThursOrSunRace = true;
+
 			return true;
 		}
 	}
@@ -371,9 +372,9 @@ class EventDTO {
 	/**
 	 * @return bool
 	 */
-	public function isEventForHouseDuty(){
+	public function isEventForHouseDuty() {
 		return (
-			!empty(trim($this->team ) ) &&
+			! empty( trim( $this->team ) ) &&
 			$this->isThursOrSunRace()
 		);
 	}
@@ -441,7 +442,7 @@ class EventDTO {
 
 	public function __toString() {
 
-		return $this->getDay() . ', ' . $this->getDate() . ', '. $this->getEvent() . ', ' . $this->getTeam();
+		return $this->getDay() . ', ' . $this->getDate() . ', ' . $this->getEvent() . ', ' . $this->getTeam();
 
 	}
 }

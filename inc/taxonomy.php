@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 function ssc_mods_event_taxonomy() {
 
 	register_taxonomy(
@@ -7,13 +11,14 @@ function ssc_mods_event_taxonomy() {
 		'event',        //post type name
 		array(
 			'hierarchical' => false,
-			'label' => 'Event types',  //Display name
-			'query_var' => true,
-			'rewrite' => array(
-				'slug' => 'event-types', // This controls the base slug that will display before each term
+			'label'        => 'Event types',  //Display name
+			'query_var'    => true,
+			'rewrite'      => array(
+				'slug'       => 'event-types', // This controls the base slug that will display before each term
 				'with_front' => false // Don't display the category base before
 			)
 		)
 	);
 }
-add_action( 'init', 'ssc_mods_event_taxonomy');
+
+add_action( 'init', 'ssc_mods_event_taxonomy' );

@@ -60,21 +60,7 @@ class ContentParser {
 	public function setDayFilter( array $days = array() ) {
 		$this->dayFilter = $days;
 	}
-
-	/**
-	 * @todo check for valid sail events
-	 * @see
-	 *
-	 * @param $sailEventTypes array
-	 *
-	 * public function setSailEventFilter(array $sailEventTypes = array()){
-	 *
-	 * if(!$this->sailType->isValidSailingEventID($sailEventTypes)){
-	 * throw new Exception('%s is not a valid ID or array of SailType IDs', print_r($sailEventTypes,1));
-	 * }
-	 * $this->sailEventFilter = $sailEventTypes;
-	 * } */
-
+	
 
 	/**
 	 * @param SailTypeFilter $sailTypeFilter
@@ -92,15 +78,17 @@ class ContentParser {
 			'errors' => array(),
 		);
 
-		$dataArray = explode("\n", $this->content);
+		$dataArray = explode( "\n", $this->content );
 
 
 		$line = 0;
-		foreach($dataArray as $dataLine) {
+		foreach ( $dataArray as $dataLine ) {
 
-			if(empty(trim($dataLine))) break;
-			
-			$data = explode( ",", $dataLine);
+			if ( empty( trim( $dataLine ) ) ) {
+				break;
+			}
+
+			$data = explode( ",", $dataLine );
 
 			try {
 				$tmp[] = $o = new EventDTO( $line, $data, $this->sailType, $this->raceSeries, $this->safetyTeams );

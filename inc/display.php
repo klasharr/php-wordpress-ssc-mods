@@ -1,5 +1,18 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Display sailing programme in place of post content for sailing content type.
+ *
+ * @todo simplify and harmonise with code used in the programme CLI
+ *
+ * @param $content
+ *
+ * @return string
+ */
 function ssc_mods_display_sailing_programme( $content ) {
 
 	/**
@@ -9,7 +22,7 @@ function ssc_mods_display_sailing_programme( $content ) {
 
 	$out = '';
 
-	if( is_singular() && in_array( get_post_type( $post ), array( 'sailing-programme' ) ) ) {
+	if ( is_singular() && in_array( get_post_type( $post ), array( 'sailing-programme' ) ) ) {
 
 		include_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/EventDTO.php' );
 		include_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/Day.php' );
@@ -32,15 +45,14 @@ function ssc_mods_display_sailing_programme( $content ) {
 				$form->getTeamsSelected()
 			);
 
-			$contentParser  = new ContentParser( $content, $sailType, new RaceSeries, $safetyTeams );
-			$eventsData = $contentParser->getData( $sailFilter );
+			$contentParser = new ContentParser( $content, $sailType, new RaceSeries, $safetyTeams );
+			$eventsData    = $contentParser->getData( $sailFilter );
 
 			// add another validation step here.
 
 		} catch ( Exception $e ) {
-			return  '<strong>Exception: ' . $e->getMessage() . ' File:' . $e->getFile() . ', Line: ' . $e->getLine() . '</strong><br/>';
+			return '<strong>Exception: ' . $e->getMessage() . ' File:' . $e->getFile() . ', Line: ' . $e->getLine() . '</strong><br/>';
 		}
-
 
 
 		$out .= EventsPage::getPageHead();
@@ -66,15 +78,16 @@ function ssc_mods_display_sailing_programme( $content ) {
 		}
 		$out .= EventsPage::getPageFooter();
 
-		if(!empty($eventsData['errors'])){
+		if ( ! empty( $eventsData['errors'] ) ) {
 
 			$out .= EventsPage::displayErrors( $eventsData['errors'] );
 
 		}
+
 		return $out;
 	}
 
 	return $content;
 }
 
-add_filter('the_content', 'ssc_mods_display_sailing_programme');
+add_filter( 'the_content', 'ssc_mods_display_sailing_programme' );

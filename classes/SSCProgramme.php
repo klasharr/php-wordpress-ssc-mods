@@ -1,10 +1,10 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit;	
-} 
+	exit;
+}
 
-include_once( 'SSCModsBase.php' );
+require_once( 'SSCModsBase.php' );
 
 class SSCProgramme extends SSCModsBase {
 
@@ -18,22 +18,14 @@ class SSCProgramme extends SSCModsBase {
 	function displayShortCode( $args, $content = null ) {
 
 		$atts = shortcode_atts( array(
-			'a'    => null
+			'a' => null
 		), $args );
 
-		$a    = $atts['a'];
+		$a = $atts['a'];
 
 		if ( empty( $a ) || ! is_string( $a ) ) {
 			return 'Error : no a value passed to shortcode';
 		}
-
-		/**
-		$data = $this->get();
-
-		if ( $data instanceof WP_Error ) {
-			return sprintf( 'Error : %s', $data->get_error_message() );
-		}
-		 **/
 
 		$this->display( 'sailing-programme-full.php',
 			array(

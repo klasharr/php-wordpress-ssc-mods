@@ -42,7 +42,7 @@ class SailType {
 		self::BANK_HOLIDAY         => 'Bank holiday',
 		self::JUNIOR_WEEK          => 'Junior week start/end',
 
-		self::FUN             => "Fun Event",
+		self::FUN => "Fun Event",
 	);
 
 	private $cupRaces = array(
@@ -128,7 +128,6 @@ class SailType {
 		) {
 			return self::FUN;
 		}
-
 
 
 		if ( preg_match( "/Series/i", $dto->getEvent() ) ) {

@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /*
  * Notes
  * https://github.com/jeremyfelt/Hooks-in-Jetpack/blob/master/filter-list.txt

@@ -9,7 +9,9 @@
  Author URI: https://klaus.blog
  Text Domain: ssc-mods
  */
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 define( 'SSC_MODS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'SSC_MODS_PLUGIN_FILE', __FILE__ );
@@ -23,9 +25,9 @@ if ( class_exists( 'WP_CLI' ) ) {
 	include_once( SSC_MODS_PLUGIN_DIR . 'inc/commands.php' );
 }
 
-function prr($args){
+function prr( $args ) {
 	echo "<pre>";
-	print_r($args);
+	print_r( $args );
 	echo "</pre>";
 }
 
