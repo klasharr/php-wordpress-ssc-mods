@@ -1,19 +1,23 @@
 <?php
 
-define( 'ABSPATH', 'x' );
-define( 'DATES' , 'sailing_prog_v5_2018.csv' );
+if(!defined( 'ABSPATH' )){
+	exit();
+}
+
+// @todo fix temp hard coded file
+define( 'DATES' , SSC_MODS_PLUGIN_DIR.'sailing_prog_v5_2018.csv' );
 define( 'ONLY_HOUSE_DUTY', true );
 
-require_once( 'classes/SSCProgramme.php' );
-include_once( 'classes/Programme/EventDTO.php' );
-include_once( 'classes/Programme/Day.php' );
-include_once( 'classes/Programme/display/FullEventsTable.php' );
-include_once( 'classes/Programme/display/EventsPage.php' );
-include_once( 'classes/Programme/mappers/SailType.php' );
-include_once( 'classes/Programme/mappers/RaceSeries.php' );
-include_once( 'classes/Programme/SailingEventForm.php' );
-include_once( 'classes/Programme/ContentParser.php' );
-include_once( 'classes/Programme/SailTypeFilter.php' );
+require_once( SSC_MODS_PLUGIN_DIR.'/classes/SSCProgramme.php' );
+include_once( SSC_MODS_PLUGIN_DIR.'/classes/Programme/EventDTO.php' );
+include_once( SSC_MODS_PLUGIN_DIR.'/classes/Programme/Day.php' );
+include_once( SSC_MODS_PLUGIN_DIR.'/classes/Programme/display/FullEventsTable.php' );
+include_once( SSC_MODS_PLUGIN_DIR.'/classes/Programme/display/EventsPage.php' );
+include_once( SSC_MODS_PLUGIN_DIR.'/classes/Programme/mappers/SailType.php' );
+include_once( SSC_MODS_PLUGIN_DIR.'/classes/Programme/mappers/RaceSeries.php' );
+include_once( SSC_MODS_PLUGIN_DIR.'/classes/Programme/SailingEventForm.php' );
+include_once( SSC_MODS_PLUGIN_DIR.'/classes/Programme/ContentParser.php' );
+include_once( SSC_MODS_PLUGIN_DIR.'/classes/Programme/SailTypeFilter.php' );
 
 
 $form = new SailingEventForm( new safetyTeams, new SailType );
@@ -21,6 +25,7 @@ $form = new SailingEventForm( new safetyTeams, new SailType );
 $safetyTeams = new SafetyTeams();
 $sailType    = new SailType();
 $sailFilter = new SailTypeFilter( $safetyTeams, $sailType, array(), array() );
+
 
 $content = file_get_contents( DATES );
 
@@ -160,11 +165,32 @@ function getDutyTime(EventDTO $dto){
 	}
 }
 
-// Output
 
-echo getCSVHeaderRow(getColHeadings());
+class SSCModsDuties {
 
-foreach ($allduties as $duty) {
-	echo getRow($duty);
+	private $allduties;
+
+	public function __construct( array $allduties ) {
+
+		$this->allduties = $allduties;
+
+	}
+	public function __invoke( $args ) {
+
+		echo getCSVHeaderRow(getColHeadings());
+
+		foreach ($allduties as $duty) {
+			echo getRow($duty);
+		}
+
+		WP_CLI::success( 'success' );
+	}
 }
+$instance = new SSCModsDuties( $allduties );
+
+WP_CLI::add_command( 'foo', $instance );
+
+
+
+
 

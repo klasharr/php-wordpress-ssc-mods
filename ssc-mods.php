@@ -19,6 +19,10 @@ include_once( SSC_MODS_PLUGIN_DIR . 'inc/post-types.php' );
 include_once( SSC_MODS_PLUGIN_DIR . 'inc/display.php' );
 include_once( SSC_MODS_PLUGIN_DIR . 'inc/taxonomy.php' );
 
+if ( class_exists( 'WP_CLI' ) ) {
+	include_once( SSC_MODS_PLUGIN_DIR . 'inc/commands.php' );
+}
+
 function prr($args){
 	echo "<pre>";
 	print_r($args);
