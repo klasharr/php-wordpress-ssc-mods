@@ -47,7 +47,7 @@ class ProgrammeBase {
 
 		$this->safetyTeams = SSCProgrammeFactory::getSafetyTeams();
 		$this->sailType    = SSCProgrammeFactory::getSailType();
-		$this->sailFilter  = SSCProgrammeFactory::getSailTypeFilter();
+		//$this->sailFilter  = SSCProgrammeFactory::getSailTypeFilter();
 		$this->raceSeries  = SSCProgrammeFactory::getRaceSeries();
 
 	}
@@ -92,15 +92,24 @@ class ProgrammeBase {
 
 	/**
 	 * @param WP_Post $post
+	 * @param bool $flatten
+	 *
+	 * @return array
+	 * @throws Exception
 	 */
-	protected function getEvents( WP_Post $post ) {
+	protected function getEvents( WP_Post $post, $flatten = true ) {
 
 		/**
 		 * @var $contentParser ContentParser
 		 */
-		$contentParser = new ContentParser( $post->post_content, $this->sailType, $this->raceSeries, $this->safetyTeams );
+		$contentParser = SSCProgrammeFactory::getContentParser( );
+		$contentParser->init($post->post_content, $this->sailType, $this->raceSeries, $this->safetyTeams );
 
-		$eventsData = $contentParser->getData( $this->sailFilter );
+		$eventsData = $contentParser->getData();
+
+		if(!$flatten){
+			return $eventsData;
+		}
 
 		$eventsDataFlattened = array();
 
@@ -116,6 +125,5 @@ class ProgrammeBase {
 
 		return $eventsDataFlattened;
 	}
-
 
 }

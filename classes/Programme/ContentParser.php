@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Idea, pass in a column scheme plan with validation rules for each column.
+ *
+ * Class ContentParser
+ */
 class ContentParser {
 
 	/**
@@ -34,17 +39,21 @@ class ContentParser {
 	private $safetyTeams;
 
 
+	public function __construct() {
+
+	}
+
 	/**
-	 * CSVParser constructor.
-	 *
-	 * @param $CSVPath
+	 * @param $content
 	 * @param SailType $sailType
 	 * @param RaceSeries $raceSeries
 	 * @param SafetyTeams $safetyTeams
-	 *
-	 * @throws Exception
 	 */
-	public function __construct( $content, SailType $sailType, RaceSeries $raceSeries, SafetyTeams $safetyTeams ) {
+	public function init( $content, SailType $sailType, RaceSeries $raceSeries, SafetyTeams $safetyTeams ) {
+
+		if ( empty( trim( $content ) ) ) {
+			throw new Exception( '$content is empty' );
+		}
 
 		$this->content     = $content;
 		$this->sailType    = $sailType;
@@ -60,15 +69,13 @@ class ContentParser {
 	public function setDayFilter( array $days = array() ) {
 		$this->dayFilter = $days;
 	}
-	
+
 
 	/**
-	 * @param SailTypeFilter $sailTypeFilter
-	 *
 	 * @return mixed
 	 * @throws Exception
 	 */
-	public function getData( SailTypeFilter $sailTypeFilter ) {
+	public function getData() {
 
 
 		$tmp = array();
@@ -93,26 +100,14 @@ class ContentParser {
 			try {
 				$tmp[] = $o = new EventDTO( $line, $data, $this->sailType, $this->raceSeries, $this->safetyTeams );
 			} catch ( Exception $e ) {
-				$out['errors'][] = 'CSV Error line: ' . $line . ' ' . $e->getMessage();
+				$out['errors'][] = sprintf('Error line: %d %s', $line, $e->getMessage());
 			}
 			$line ++;
 		}
 
-		$teamsToFilterOn      = $sailTypeFilter->getTeamFilter();
-		$sailEventsToFilterOn = $sailTypeFilter->getTypeFilter();
-
 		/** @var $dto EventDTO */
 		foreach ( $tmp as $i => $dto ) {
-
-			if ( ! empty( $teamsToFilterOn ) && ! in_array( $dto->getTeam(), $teamsToFilterOn ) ) {
-				continue;
-			}
-
-			if ( empty( $sailEventsToFilterOn ) ) {
-				$out['data'][ $dto->getDate() ][] = $dto;
-			} elseif ( in_array( $dto->getType(), $sailEventsToFilterOn ) ) {
-				$out['data'][ $dto->getDate() ][] = $dto;
-			}
+			$out['data'][ $dto->getDate() ][] = $dto;
 		}
 
 		return $out;
