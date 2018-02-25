@@ -96,35 +96,7 @@ function getColHeadings(){
 }
 
 
-function getHouseDuties(EventDTO $dto, & $allduties){
 
-	$s = "If you are sailing please start as soon as you can. Swap on Dutyman if you can't make this duty and in case of problems your team lead is R...";
-
-	//1
-	$duty = getCsvRow($dto);
-	$duty['Duty Type'] = 'Galley';
-	$duty['Duty Instructions'] = $s;
-	$allduties[] = $duty;
-
-	//2
-	$duty = getCsvRow($dto);
-	$duty['Duty Type'] = 'Galley';
-	$duty['Duty Instructions'] = $s;
-	$allduties[] = $duty;
-
-	//3
-	$duty = getCsvRow($dto);
-	$duty['Duty Type'] = 'Bar';
-	$duty['Duty Instructions'] = $s;
-	$allduties[] = $duty;
-
-	//4
-	$duty = getCsvRow($dto);
-	$duty['Duty Type'] = 'Bar';
-	$duty['Duty Instructions'] = $s;
-	$allduties[] = $duty;
-
-}
 
 
 

@@ -4,8 +4,6 @@ if(!defined( 'ABSPATH' )){
 	exit();
 }
 
-// @todo fix temp hard coded file
-define( 'DATES' , SSC_MODS_PLUGIN_DIR.'sailing_prog_v5_2018.csv' );
 define( 'ONLY_HOUSE_DUTY', true );
 
 require_once( SSC_MODS_PLUGIN_DIR.'/classes/SSCProgramme.php' );
@@ -13,184 +11,122 @@ include_once( SSC_MODS_PLUGIN_DIR.'/classes/Programme/EventDTO.php' );
 include_once( SSC_MODS_PLUGIN_DIR.'/classes/Programme/Day.php' );
 include_once( SSC_MODS_PLUGIN_DIR.'/classes/Programme/display/FullEventsTable.php' );
 include_once( SSC_MODS_PLUGIN_DIR.'/classes/Programme/display/EventsPage.php' );
-include_once( SSC_MODS_PLUGIN_DIR.'/classes/Programme/mappers/SailType.php' );
-include_once( SSC_MODS_PLUGIN_DIR.'/classes/Programme/mappers/RaceSeries.php' );
-include_once( SSC_MODS_PLUGIN_DIR.'/classes/Programme/SailingEventForm.php' );
 include_once( SSC_MODS_PLUGIN_DIR.'/classes/Programme/ContentParser.php' );
-include_once( SSC_MODS_PLUGIN_DIR.'/classes/Programme/SailTypeFilter.php' );
+include_once( SSC_MODS_PLUGIN_DIR.'/classes/Programme/SSCProgrammeFactory.php' );
 
 
-$form = new SailingEventForm( new safetyTeams, new SailType );
+class ProgrammeBase {
 
-$safetyTeams = new SafetyTeams();
-$sailType    = new SailType();
-$sailFilter = new SailTypeFilter( $safetyTeams, $sailType, array(), array() );
-
-
-$content = file_get_contents( DATES );
-
-$contentParser  = new ContentParser( $content, $sailType, new RaceSeries, $safetyTeams );
-
-$eventsData = $contentParser->getData( $sailFilter );
-
-$eventsDataFlattened = array();
-
-foreach ( $eventsData['data'] as $date => $events ) {
 	/**
-	 * @var EventDTO $EventDTO
+	 * @var SafetyTeams
 	 */
-	foreach( $events as $EventDTO) {
-		$eventsDataFlattened[] = $EventDTO;
-	}
-}
+	private $safetyTeams;
 
-$EventDTO = false;
-$linesForCSV = array();
-$allduties = array();
+	/**
+	 * @var SailType
+	 */
+	private $sailType;
 
-foreach( $eventsDataFlattened as $EventDTO) {
+	/**
+	 * @var SailTypeFilter
+	 */
+	private $sailFilter;
 
-	if( ONLY_HOUSE_DUTY && !$EventDTO->isEventForHouseDuty() ) {
-		continue;
-	}
+	/**
+	 * @var RaceSeries
+	 */
+	private $raceSeries;
 
-	$linesForCSV[] = array(
-		'date' => $EventDTO->getDate(),
-		'day' => $EventDTO->weekday,
-		'event' => $EventDTO->getEvent(),
-		'team' => $EventDTO->getTeam(),
-		'type' => $EventDTO->getTypeName(),
-		'time' => $EventDTO->getTime(),
-	);
+	/**
+	 * @var $allDuties array
+	 */
+	protected $allDuties;
 
-	getHouseDuties($EventDTO, $allduties);
-
-	//echo $EventDTO . "\n";
-
-}
-
-function getCSVHeaderRow($a){
-	return implode(',', array_keys($a))."\n";
-}
-
-function getRow($a){
-	return implode(',', array_values($a))."\n";
-
-}
+	/**
+	 * @var $flattenedEvents array
+	 */
+	protected $flattenedEvents;
 
 
-function getColHeadings(){
+	public function __construct() {
 
-	return array(
-		'Duty Date' => '', // Yes dd/mm/yy
-		'Duty Time' => '',
-		'Event' => '', // Yes A description of what is taking place
-		'Duty Type' => '', // Yes A brief description of the duty, for example Race Officer, Results, Bar
-		'Swappable' => '',
-		'Reminders' => '',
-		'Confirmed' => '',
-		'Duty Notify' => '',
-		'Duty Instructions' => '',
-		'Duty DBID' => '',
-		'First Name' => '',
-		'Last Name' => '',
-		'Member Name' => '',
-		'Alloc' => '',
-		'Notes' => ''
-	);
-}
-
-
-function getHouseDuties(EventDTO $dto, & $allduties){
-
-	$s = "If you are sailing please start as soon as you can. Swap on Dutyman if you can't make this duty and in case of problems your team lead is R...";
-
-	//1
-	$duty = getCsvRow($dto);
-	$duty['Duty Type'] = 'Galley';
-	$duty['Duty Instructions'] = $s;
-	$allduties[] = $duty;
-
-	//2
-	$duty = getCsvRow($dto);
-	$duty['Duty Type'] = 'Galley';
-	$duty['Duty Instructions'] = $s;
-	$allduties[] = $duty;
-
-	//3
-	$duty = getCsvRow($dto);
-	$duty['Duty Type'] = 'Bar';
-	$duty['Duty Instructions'] = $s;
-	$allduties[] = $duty;
-
-	//4
-	$duty = getCsvRow($dto);
-	$duty['Duty Type'] = 'Bar';
-	$duty['Duty Instructions'] = $s;
-	$allduties[] = $duty;
-
-}
-
-
-
-function getCsvRow(EventDTO $dto){
-
-	$a = getColHeadings();
-
-	$a['Duty Date'] = $dto->getDate();
-	$a['Event'] = $dto->getEvent();
-	$a['Duty Time'] = getDutyTime($dto);
-
-	return $a;
-}
-
-
-function getDutyTime(EventDTO $dto){
-
-	switch( $dto->getTime()) {
-		case '1830';
-			return '1930';
-			break;
-
-		case '1900';
-			return '2000';
-			break;
-
-		case '1030':
-		case '1100':
-			return '1145';
-			break;
-		default:
-			throw new Exception('Invalid time');
-	}
-}
-
-
-class SSCModsDuties {
-
-	private $allduties;
-
-	public function __construct( array $allduties ) {
-
-		$this->allduties = $allduties;
+		$this->safetyTeams    = SSCProgrammeFactory::getSafetyTeams();
+		$this->sailType       = SSCProgrammeFactory::getSailType();
+		$this->sailFilter     = SSCProgrammeFactory::getSailTypeFilter();
+		$this->raceSeries     = SSCProgrammeFactory::getRaceSeries();
 
 	}
+
 	public function __invoke( $args ) {
 
-		echo getCSVHeaderRow(getColHeadings());
-
-		foreach ($allduties as $duty) {
-			echo getRow($duty);
+		if( empty( $args[0]) || (int) $args[0] === 0 ){
+			WP_CLI::error('The first argument must be a non zero integer value');
 		}
 
-		WP_CLI::success( 'success' );
+		$post = $this->getPost( $args[0] );
+
+		try{
+
+			$this->flattenedEvents = $this->getEvents( $post );
+
+		} catch( Exception $e){
+			WP_CLI::error( $e->getMessage());
+		}
+
 	}
+
+	/**
+	 * @param $post_id
+	 *
+	 * @return array|null|WP_Post
+	 * @throws Exception
+	 */
+	protected function getPost( $post_id){
+
+		$post = get_post( $post_id );
+
+		if ( false === $post instanceof WP_Post ) {
+			throw new Exception('Post with ID %d does not exist.', $post_id );
+		}
+
+		if($post->post_type != 'sailing-programme' ){
+			throw new Exception('The post ID passed must be a post type: sailing-programme');
+		}
+
+		if ( empty( $post->post_content ) ) {
+			throw new Exception( sprintf( 'Sailing Programme with Post ID %d has no content.', $post_id ) );
+		}
+
+		return $post;
+
+	}
+
+	/**
+	 * @param WP_Post $post
+	 */
+	protected function getEvents( WP_Post $post ) {
+
+		/**
+		 * @var $contentParser ContentParser
+		 */
+		$contentParser = new ContentParser( $post->post_content, $this->sailType, $this->raceSeries, $this->safetyTeams );
+
+		$eventsData = $contentParser->getData( $this->sailFilter );
+
+		$eventsDataFlattened = array();
+
+		foreach ( $eventsData['data'] as $date => $events ) {
+
+			/**
+			 * @var EventDTO $EventDTO
+			 */
+			foreach ( $events as $EventDTO ) {
+				$eventsDataFlattened[] = $EventDTO;
+			}
+		}
+
+		return $eventsDataFlattened;
+	}
+
+
 }
-$instance = new SSCModsDuties( $allduties );
-
-WP_CLI::add_command( 'foo', $instance );
-
-
-
-
-
