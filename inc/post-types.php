@@ -53,7 +53,7 @@ function ssc_mods_disable_wysiwyg( $default ) {
 
 add_filter( 'user_can_richedit', 'ssc_mods_disable_wysiwyg' );
 
-
+/*
 function ssc_mods_add_post_type_event_date_fields() {
 
 	$fm = new Fieldmanager_Group( array(
@@ -74,8 +74,9 @@ function ssc_mods_add_post_type_event_date_fields() {
 	$fm->add_meta_box( 'Dates', array( 'event' ) );
 
 }
+*/
 
-// Turn of jetpack sharing for all posts
+// Turn off jJtpack sharing for all posts
 function ssc_mods_disable_sharing( $services ) {
 	return false;
 }

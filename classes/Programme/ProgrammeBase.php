@@ -1,5 +1,7 @@
 <?php
 
+namespace SSCMods;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit();
 }
@@ -43,6 +45,12 @@ class ProgrammeBase {
 	protected $flattenedEvents;
 
 
+	/**
+	 * @var int
+	 */
+	private $post_id;
+
+
 	public function __construct() {
 
 		$this->safetyTeams = SSCProgrammeFactory::getSafetyTeams();
@@ -55,14 +63,26 @@ class ProgrammeBase {
 	public function __invoke( $args ) {
 
 		if ( empty( $args[0] ) || (int) $args[0] === 0 ) {
-			throw new Exception( 'The first argument must be a non zero integer value' );
+			throw new \Exception( 'The first argument must be a non zero integer value' );
 		}
 
-		$post = $this->getPost( $args[0] );
-
-		$this->flattenedEvents = $this->getEvents( $post );
+		$this->post_id = $args[0];
 
 	}
+
+	/**
+	 * @todo implement filter
+	 * 
+	 * @throws \Exception
+	 */
+	protected function execute( $filter = null ){
+
+		$post = $this->getPost( $this->post_id );
+
+		$this->flattenedEvents = $this->getEvents( $post );
+		
+	}
+
 
 	/**
 	 * @param $post_id
@@ -74,16 +94,16 @@ class ProgrammeBase {
 
 		$post = get_post( $post_id );
 
-		if ( false === $post instanceof WP_Post ) {
-			throw new Exception( 'Post with ID %d does not exist.', $post_id );
+		if ( false === $post instanceof \WP_Post ) {
+			throw new \Exception( 'Post with ID %d does not exist.', $post_id );
 		}
 
 		if ( $post->post_type != 'sailing-programme' ) {
-			throw new Exception( 'The post ID passed must be a post type: sailing-programme' );
+			throw new \Exception( 'The post ID passed must be a post type: sailing-programme' );
 		}
 
 		if ( empty( $post->post_content ) ) {
-			throw new Exception( sprintf( 'Sailing Programme with Post ID %d has no content.', $post_id ) );
+			throw new \Exception( sprintf( 'Sailing Programme with Post ID %d has no content.', $post_id ) );
 		}
 
 		return $post;
@@ -97,7 +117,7 @@ class ProgrammeBase {
 	 * @return array
 	 * @throws Exception
 	 */
-	protected function getEvents( WP_Post $post, $flatten = true ) {
+	protected function getEvents( \WP_Post $post, $flatten = true ) {
 
 		/**
 		 * @var $contentParser ContentParser

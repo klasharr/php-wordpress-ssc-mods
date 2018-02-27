@@ -1,5 +1,7 @@
 <?php
 
+namespace SSCMods;
+
 class SailType {
 
 	const
@@ -86,7 +88,7 @@ class SailType {
 	public function get( EventDTO $dto ) {
 		$event = trim( $dto->getEvent() );
 		if ( empty( $event ) ) {
-			throw new Exception( 'Event is empty.' );
+			throw new \Exception( 'Event is empty.' );
 		}
 
 

@@ -1,5 +1,7 @@
 <?php
 
+namespace SSCMods;
+
 
 class EventsPage {
 	public static function getPageHead() {

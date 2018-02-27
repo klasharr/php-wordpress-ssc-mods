@@ -8,17 +8,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 include_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/ProgrammeBase.php' );
 
-Class HouseDuties extends ProgrammeBase {
+Class SafetyDuties extends ProgrammeBase {
 
 	public function __invoke( $args ) {
 
 		try {
 			parent::__invoke( $args );
-			parent::execute();
-
 		} catch ( \Exception $e ) {
 			\WP_CLI::error( $e->getMessage() );
 		}
+
+		$this->execute(1);
 
 		foreach ( $this->flattenedEvents as $event ) {
 			\WP_CLI::log( $event );

@@ -1,5 +1,7 @@
 <?php
 
+namespace SSCMods;
+
 include_once( 'SafetyTeams.php' );
 include_once( 'mappers/SailType.php' );
 

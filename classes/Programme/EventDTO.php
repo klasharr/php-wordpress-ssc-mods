@@ -1,5 +1,7 @@
 <?php
 
+namespace SSCMods;
+
 /**
  * Class EventDTO
  *
@@ -226,8 +228,8 @@ class EventDTO {
 				if ( ! empty( $value ) ) {
 					try {
 						$this->$method( $value );
-					} catch ( Exception $e ) {
-						throw new Exception ( $e->getMessage() );
+					} catch ( \Exception $e ) {
+						throw new \Exception ( $e->getMessage() );
 					}
 				}
 			}
@@ -295,8 +297,8 @@ class EventDTO {
 	 */
 	public function setDate( $date ) {
 
-		if ( ! $d = DateTime::createFromFormat( self::INPUT_DATE_FORMAT, $date ) ) {
-			throw new Exception( sprintf( 'Bad date format %s', $date ) );
+		if ( !empty($date) && ! $d = \DateTime::createFromFormat( self::INPUT_DATE_FORMAT, $date ) ) {
+			throw new \Exception( sprintf( 'Bad date format %s', $date ) );
 		}
 
 		$month = $d->format( 'n' );
@@ -304,7 +306,7 @@ class EventDTO {
 		$year  = $d->format( 'Y' );
 
 		if ( ! checkdate( $month, $day, $year ) ) {
-			throw new Exception( 'Invalidate date ' . $date );
+			throw new \Exception( 'Invalidate date ' . $date );
 		}
 		$this->date = $d->format( self::OUTPUT_DATE_FORMAT );
 

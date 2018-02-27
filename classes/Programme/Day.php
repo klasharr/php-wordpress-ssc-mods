@@ -1,5 +1,7 @@
 <?php
 
+namespace SSCMods;
+
 /**
  * Class Day
  *

@@ -6,7 +6,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once( SSC_MODS_PLUGIN_DIR . '/classes/CLI/HouseDuties.php' );
 
-$instance = new HouseDuties();
+$house_duties = new \SSCMods\HouseDuties();
+WP_CLI::add_command( 'houseduties', $house_duties );
 
-WP_CLI::add_command( 'duties', $instance );
+require_once( SSC_MODS_PLUGIN_DIR . '/classes/CLI/SafetyDuties.php' );
+
+$safety_duties = new \SSCMods\SafetyDuties();
+WP_CLI::add_command( 'safetyduties', $safety_duties );
 

@@ -1,5 +1,7 @@
 <?php
 
+namespace SSCMods;
+
 class FullEventsTable {
 
 	public static $teamcount = 0;

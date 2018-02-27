@@ -1,5 +1,7 @@
 <?php
 
+namespace SSCMods;
+
 require_once( 'mappers/SailType.php' );
 require_once( 'SafetyTeams.php' );
 require_once( 'SailTypeFilter.php' );
@@ -12,31 +14,31 @@ class SSCProgrammeFactory {
 	 * @return SafetyTeams
 	 */
 	public static function getSafetyTeams() {
-		return new SafetyTeams();
+		return new \SSCMods\SafetyTeams();
 	}
 
 	/**
 	 * @return SailType
 	 */
 	public static function getSailType() {
-		return new SailType();
+		return new \SSCMods\SailType();
 	}
 
 	/**
 	 * @return SailTypeFilter
 	 */
 	public static function getSailTypeFilter() {
-		return new SailTypeFilter( new SafetyTeams(), new SailType(), array(), array() );
+		return new \SSCMods\SailTypeFilter( new \SSCMods\SafetyTeams(), new \SSCMods\SailType(), array(), array() );
 	}
 
 	/**
 	 * @return RaceSeries
 	 */
 	public static function getRaceSeries() {
-		return new RaceSeries;
+		return new \SSCMods\RaceSeries;
 	}
 
 	public static function getContentParser(){
-		return new ContentParser;
+		return new \SSCMods\ContentParser;
 	}
 }
