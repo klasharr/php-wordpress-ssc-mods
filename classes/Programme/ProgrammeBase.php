@@ -6,13 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit();
 }
 
-require_once( 'EventDTO.php' );
-require_once( 'Day.php' );
-require_once( 'display/FullEventsTable.php' );
-require_once( 'display/EventsPage.php' );
 require_once( 'SSCProgrammeFactory.php' );
-require_once( 'Filter.php');
-require_once( 'NullFilter.php');
 
 class ProgrammeBase {
 

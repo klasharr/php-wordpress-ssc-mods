@@ -4,6 +4,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+require_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/SSCProgrammeFactory.php' );
+require_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/display/FullEventsTable.php' );
+require_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/display/EventsPage.php' );
+
 /**
  * Display sailing programme in place of post content for sailing content type.
  *
@@ -24,63 +28,49 @@ function ssc_mods_display_sailing_programme( $content ) {
 
 	if ( is_singular() && in_array( get_post_type( $post ), array( 'sailing-programme' ) ) ) {
 
-		include_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/EventDTO.php' );
-		include_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/Day.php' );
-		include_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/display/FullEventsTable.php' );
-		include_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/display/EventsPage.php' );
-		include_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/mappers/SailType.php' );
-		include_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/mappers/RaceSeries.php' );
-		include_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/SailingEventForm.php' );
-		include_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/ContentParser.php' );
-		include_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/SailTypeFilter.php' );
-
 		try {
 
-			$form = new SailingEventForm( new safetyTeams, new SailType );
+			$contentParser = \SSCMods\SSCProgrammeFactory::getContentParser( );
 
-			$safetyTeams = new SafetyTeams();
-			$sailType    = new SailType();
-
-			$sailFilter = new SailTypeFilter( $safetyTeams, $sailType, $form->getSailEventTypesSelected(),
-				$form->getTeamsSelected()
+			$contentParser->init(
+				$post->post_content,
+				\SSCMods\SSCProgrammeFactory::getSailType(),
+				\SSCMods\SSCProgrammeFactory::getRaceSeries(),
+				\SSCMods\SSCProgrammeFactory::getSafetyTeams()
 			);
 
-			$contentParser = new ContentParser( $content, $sailType, new RaceSeries, $safetyTeams );
-			$eventsData    = $contentParser->getData( $sailFilter );
-
-			// add another validation step here.
+			$eventsData = $contentParser->getData( new \SSCMods\NullFilter() );
 
 		} catch ( Exception $e ) {
-			return '<strong>Exception: ' . $e->getMessage() . ' File:' . $e->getFile() . ', Line: ' . $e->getLine() . '</strong><br/>';
+			return '<strong>Exception: ' . $e->getMessage() . ', Line: ' . $e->getLine() . '</strong><br/>';
 		}
 
 
-		$out .= EventsPage::getPageHead();
-		$out .= EventsPage::displayErrors( $eventsData['errors'] );
-		//$out .= EventsPage::getForm( $form );
-		$out .= FullEventsTable::getCSS();
+		$out .= \SSCMods\EventsPage::getPageHead();
+		$out .= \SSCMods\EventsPage::displayErrors( $eventsData['errors'] );
+		$out .= \SSCMods\FullEventsTable::getCSS();
 
 		if ( $eventsData['data'] ) {
-			$out .= FullEventsTable::getOpenTableTag();
-			$out .= FullEventsTable::getHeader();
+			$out .= \SSCMods\FullEventsTable::getOpenTableTag();
+			$out .= \SSCMods\FullEventsTable::getHeader();
 
 			foreach ( $eventsData['data'] as $date => $DTOArray ) {
-				$day = new day();
+				$day = new \SSCMods\Day();
 				foreach ( $DTOArray as $DTO ) {
 					$day->addEvent( $DTO );
 				}
-				$out .= FullEventsTable::getRow( $day );
+				$out .= \SSCMods\FullEventsTable::getRow( $day );
 			}
 
-			$out .= FullEventsTable::getClosingTag();
+			$out .= \SSCMods\FullEventsTable::getClosingTag();
 		} else {
 			//$out .= EventsPage::displayNoResultsMessage();
 		}
-		$out .= EventsPage::getPageFooter();
+		$out .= \SSCMods\EventsPage::getPageFooter();
 
 		if ( ! empty( $eventsData['errors'] ) ) {
 
-			$out .= EventsPage::displayErrors( $eventsData['errors'] );
+			$out .= \SSCMods\EventsPage::displayErrors( $eventsData['errors'] );
 
 		}
 

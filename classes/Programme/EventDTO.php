@@ -444,7 +444,7 @@ class EventDTO {
 
 	public function __toString() {
 
-		return $this->getDay() . ', ' . $this->getDate() . ', ' . $this->getEvent() . ', ' . $this->getTeam();
+		return $this->getDay() . ', ' . $this->getDate() . ', ' . ', ' . $this->getTime() . ', '. $this->getEvent() . ', ' . $this->getTeam();
 
 	}
 }

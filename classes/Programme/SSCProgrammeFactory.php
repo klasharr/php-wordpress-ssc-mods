@@ -7,6 +7,11 @@ require_once( 'SafetyTeams.php' );
 require_once( 'SailTypeFilter.php' );
 require_once( 'mappers/RaceSeries.php' );
 require_once( 'ContentParser.php' );
+require_once( 'Filter.php' );
+require_once( 'NullFilter.php' );
+require_once( 'EventDTO.php' );
+require_once( 'Day.php' );
+require_once( 'SafetyTeamFilter.php' );
 
 class SSCProgrammeFactory {
 
@@ -40,5 +45,9 @@ class SSCProgrammeFactory {
 
 	public static function getContentParser(){
 		return new \SSCMods\ContentParser;
+	}
+
+	public static function getSafetyTeamFilter(){
+		return new \SSCMods\SafetyTeamFilter;
 	}
 }
