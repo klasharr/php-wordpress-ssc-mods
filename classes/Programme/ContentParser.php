@@ -62,7 +62,7 @@ class ContentParser {
 	 * @return mixed
 	 * @throws Exception
 	 */
-	public function getData() {
+	public function getData( Filter $filter ) {
 
 		$out = array(
 			'data'   => array(),
@@ -84,6 +84,9 @@ class ContentParser {
 
 				/** @var $dto EventDTO */
 				$dto = new EventDTO( $line, $data, $this->sailType, $this->raceSeries, $this->safetyTeams );
+
+				if( !$filter->filter( $dto ) ) continue;
+
 				$out['data'][ $dto->getDate() ][] = $dto;
 
 			} catch ( \Exception $e ) {

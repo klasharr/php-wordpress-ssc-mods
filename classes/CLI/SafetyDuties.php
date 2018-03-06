@@ -6,7 +6,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit();
 }
 
-include_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/ProgrammeBase.php' );
+require_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/ProgrammeBase.php' );
+require_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/SafetyTeamFilter.php' );
 
 Class SafetyDuties extends ProgrammeBase {
 
@@ -18,7 +19,7 @@ Class SafetyDuties extends ProgrammeBase {
 			\WP_CLI::error( $e->getMessage() );
 		}
 
-		$this->execute(1);
+		$this->execute( new SafetyTeamFilter() );
 
 		foreach ( $this->flattenedEvents as $event ) {
 			\WP_CLI::log( $event );

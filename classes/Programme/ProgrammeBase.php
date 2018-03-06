@@ -11,6 +11,8 @@ require_once( 'Day.php' );
 require_once( 'display/FullEventsTable.php' );
 require_once( 'display/EventsPage.php' );
 require_once( 'SSCProgrammeFactory.php' );
+require_once( 'Filter.php');
+require_once( 'NullFilter.php');
 
 class ProgrammeBase {
 
@@ -71,15 +73,21 @@ class ProgrammeBase {
 	}
 
 	/**
-	 * @todo implement filter
-	 * 
+	 * @param Filter $filter
+	 *
 	 * @throws \Exception
 	 */
-	protected function execute( $filter = null ){
+	protected function execute( $filter = false ) {
+
+		if( $filter !== false && ! ( $filter instanceof Filter ) ) {
+			throw new \Exception ( 'If an arg is present, execute must be passed a filter.' );
+		} elseif( $filter === false ){
+			$filter = new NullFilter();
+		}
 
 		$post = $this->getPost( $this->post_id );
 
-		$this->flattenedEvents = $this->getEvents( $post );
+		$this->flattenedEvents = $this->getEvents( $post, true, $filter );
 		
 	}
 
@@ -117,7 +125,7 @@ class ProgrammeBase {
 	 * @return array
 	 * @throws Exception
 	 */
-	protected function getEvents( \WP_Post $post, $flatten = true ) {
+	protected function getEvents( \WP_Post $post, $flatten = true, $filter = false ) {
 
 		/**
 		 * @var $contentParser ContentParser
@@ -125,7 +133,7 @@ class ProgrammeBase {
 		$contentParser = SSCProgrammeFactory::getContentParser( );
 		$contentParser->init($post->post_content, $this->sailType, $this->raceSeries, $this->safetyTeams );
 
-		$eventsData = $contentParser->getData();
+		$eventsData = $contentParser->getData( $filter );
 
 		if(!$flatten){
 			return $eventsData;
