@@ -168,7 +168,11 @@ class SailType {
 			return self::FUN_SERIES;
 		}
 
-		throw new Exception( $dto->getEvent() . ' is not a recognised event' );
+		if ( preg_match( "/Carnival/i", $dto->getEvent() ) ) {
+			return self::OTHER;
+		}
+
+		throw new \Exception( $dto->getEvent() . ' is not a recognised event' );
 	}
 
 	/**

@@ -151,12 +151,8 @@ class EventDTO {
 	 */
 	function __construct( $line, array $CSVRowData, SailType $sailType, RaceSeries $raceSeries, SafetyTeams $safetyTeams ) {
 
-		if ( count( $CSVRowData ) != 7 ) {
-			throw new Exception( 'Line ' . $line . ' does not have seven columns' );
-		}
-
 		if ( ! array( $CSVRowData ) || empty( $CSVRowData ) ) {
-			throw new Exception( '$data is not an array or empty' );
+			throw new \Exception( '$data is not an array or empty' );
 		}
 
 		$this->CSVRowData = $CSVRowData;

@@ -18,3 +18,8 @@ require_once( SSC_MODS_PLUGIN_DIR . '/classes/CLI/Members.php' );
 
 $members = new \SSCMods\Members();
 WP_CLI::add_command( 'members', $members );
+
+require_once( SSC_MODS_PLUGIN_DIR . '/classes/CLI/Events.php' );
+
+$members = new \SSCMods\Events();
+WP_CLI::add_command( 'events', $members );

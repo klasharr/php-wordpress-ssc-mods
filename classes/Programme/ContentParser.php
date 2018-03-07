@@ -36,6 +36,17 @@ class ContentParser {
 	private $safetyTeams;
 
 
+	/**
+	 * @var array
+	 */
+	private $header = array();
+
+	/**
+	 * @var int|null
+	 */
+	private $headerCount = null;
+
+
 	public function __construct() {
 
 	}
@@ -58,6 +69,29 @@ class ContentParser {
 		$this->safetyTeams = $safetyTeams;
 	}
 
+
+	/**
+	 * @param $csvLine string
+	 */
+	private function setHeader($csvLine){
+		$this->header = explode( ",", $csvLine );
+		$this->headerCount = count($this->header);
+	}
+
+	/**
+	 * @return array
+	 */
+	private function getHeader(){
+		return $this->header;
+	}
+
+	/**
+	 * @return int|null
+	 */
+	private function getHeaderCount(){
+		return $this->headerCount;
+	}
+
 	/**
 	 * @return mixed
 	 * @throws Exception
@@ -74,11 +108,20 @@ class ContentParser {
 		$line = 0;
 		foreach ( $dataArray as $dataLine ) {
 
+			if($line == 0 ){
+				$this->setHeader($dataLine);
+				$this->getHeaderCount();
+			}
+
 			if ( empty( trim( $dataLine ) ) ) {
 				break;
 			}
 
 			$data = explode( ",", $dataLine );
+
+			if(count($data) !== (int) $this->headerCount ){
+				throw new \Exception('Line ' . $line . ' column count mismatch, expected ' . $this->getHeaderCount() . ' columns. ' );
+			}
 
 			try {
 

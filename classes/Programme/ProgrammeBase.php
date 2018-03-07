@@ -81,6 +81,10 @@ class ProgrammeBase {
 
 		$post = $this->getPost( $this->post_id );
 
+		if( !is_a($post, 'WP_Post') ) {
+			throw new \Exception ( '$this->post_id does not return a post object.' );
+		}
+
 		$this->flattenedEvents = $this->getEvents( $post, true, $filter );
 		
 	}

@@ -31,6 +31,7 @@ function ssc_mods_post_types_init() {
 			'title',
 			'editor',
 			'revisions',
+			'custom-fields',
 		)
 	);
 	register_post_type( 'sailing-programme', $args );
@@ -53,32 +54,11 @@ function ssc_mods_disable_wysiwyg( $default ) {
 
 add_filter( 'user_can_richedit', 'ssc_mods_disable_wysiwyg' );
 
-/*
-function ssc_mods_add_post_type_event_date_fields() {
 
-	$fm = new Fieldmanager_Group( array(
-		'name'     => 'Dates',
-		'children' => array(
-			'event_start_date' => new Fieldmanager_Datepicker( array(
-				'name'     => 'event_start_date',
-				'use_time' => true,
-				'label'    => 'Start',
-			) ),
-			'event_end_date'   => new Fieldmanager_Datepicker( array(
-				'name'     => 'event_end_date',
-				'use_time' => true,
-				'label'    => 'End',
-			) ),
-		),
-	) );
-	$fm->add_meta_box( 'Dates', array( 'event' ) );
-
-}
-*/
-
-// Turn off jJtpack sharing for all posts
+// Turn off jetpack sharing for all posts
 function ssc_mods_disable_sharing( $services ) {
 	return false;
 }
 
 add_filter( 'sharing_show', 'ssc_mods_disable_sharing' );
+
