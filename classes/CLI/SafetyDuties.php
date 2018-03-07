@@ -20,6 +20,8 @@ Class SafetyDuties extends ProgrammeBase {
 			\WP_CLI::error( $e->getMessage() );
 		}
 
+		\WP_CLI::log( $this->getDutymanHeaders() );
+
 		/**
 		 * @var $event EventDTO
 		 */
@@ -48,6 +50,28 @@ Class SafetyDuties extends ProgrammeBase {
 			'Duty Time'         => $this->getDutyTime( $dto ),
 			'Event'             => $dto->getEvent(),
 			'Duty Type'         => 'Safety', // Yes A brief description of the duty, for example Race Officer, Results, Bar
+			'Swappable'         => 'Yes',
+			'Reminders'         => 'Yes',
+			'Confirmed'         => '',
+			'Duty Notify'       => '',
+			'Duty Instructions' => 'Please only swap like for like duties. If you have any questions please contact your Team Leader.',
+			'Duty DBID'         => '',
+			'First Name'        => '',
+			'Last Name'         => '',
+			'Member Name'       => '',
+			'Alloc'             => '',
+			'Notes'             => ''
+		);
+
+	}
+
+	private function getDutymanHeaders(){
+
+		$a = array(
+			'Duty Date'         => '',
+			'Duty Time'         => '',
+			'Event'             => '',
+			'Duty Type'         => '', // Yes A brief description of the duty, for example Race Officer, Results, Bar
 			'Swappable'         => '',
 			'Reminders'         => '',
 			'Confirmed'         => '',
@@ -61,6 +85,7 @@ Class SafetyDuties extends ProgrammeBase {
 			'Notes'             => ''
 		);
 
+		return implode( ',', array_keys( $a ) );
 	}
 
 
@@ -73,20 +98,20 @@ Class SafetyDuties extends ProgrammeBase {
 
 		switch ( $dto->getTime() ) {
 			case '1830';
-				return '1700';
+				return '17:00';
 				break;
 
 			case '1900';
-				return '1730';
+				return '17:30';
 				break;
 			case '1030':
-				return '0900';
+				return '09:00';
 				break;
 			case '1100':
-				return '0930';
+				return '09:30';
 				break;
 			case '1400':
-				return 1230;
+				return '12:30';
 				break;
 			default:
 				\WP_CLI::error( 'Invalid time ' . $dto );
@@ -136,8 +161,4 @@ Class SafetyDuties extends ProgrammeBase {
 
 }
 
-//echo getCSVHeaderRow(getColHeadings());
 
-//foreach ($allduties as $duty) {
-//echo getRow($duty);
-//}

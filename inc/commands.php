@@ -14,3 +14,7 @@ require_once( SSC_MODS_PLUGIN_DIR . '/classes/CLI/SafetyDuties.php' );
 $safety_duties = new \SSCMods\SafetyDuties();
 WP_CLI::add_command( 'safetyduties', $safety_duties );
 
+require_once( SSC_MODS_PLUGIN_DIR . '/classes/CLI/Members.php' );
+
+$members = new \SSCMods\Members();
+WP_CLI::add_command( 'members', $members );
