@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/SSCProgrammeFactory.php' );
+require_once( SSC_MODS_PLUGIN_DIR . '/classes/SSCModsFactory.php' );
 require_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/display/FullEventsTable.php' );
 require_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/display/EventsPage.php' );
 
@@ -30,13 +30,13 @@ function ssc_mods_display_sailing_programme( $content ) {
 
 		try {
 
-			$contentParser = \SSCMods\SSCProgrammeFactory::getContentParser( );
+			$contentParser = \SSCMods\SSCModsFactory::getContentParser( );
 
 			$contentParser->init(
 				$post->post_content,
-				\SSCMods\SSCProgrammeFactory::getSailType(),
-				\SSCMods\SSCProgrammeFactory::getRaceSeries(),
-				\SSCMods\SSCProgrammeFactory::getSafetyTeams()
+				\SSCMods\SSCModsFactory::getSailType(),
+				\SSCMods\SSCModsFactory::getRaceSeries(),
+				\SSCMods\SSCModsFactory::getSafetyTeams()
 			);
 
 			$eventsData = $contentParser->getData( new \SSCMods\NullFilter() );

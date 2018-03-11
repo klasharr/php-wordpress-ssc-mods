@@ -23,3 +23,10 @@ require_once( SSC_MODS_PLUGIN_DIR . '/classes/CLI/Events.php' );
 
 $members = new \SSCMods\Events();
 WP_CLI::add_command( 'events', $members );
+
+
+
+require_once( SSC_MODS_PLUGIN_DIR . '/classes/CLI/SafetyTeamsUtil.php' );
+
+$safetyTeams = new \SSCMods\SafetyTeamsUtil();
+WP_CLI::add_command( 'safetyteams', $safetyTeams );

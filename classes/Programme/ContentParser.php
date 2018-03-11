@@ -46,6 +46,11 @@ class ContentParser {
 	 */
 	private $headerCount = null;
 
+	/**
+	 * @var $fieldValidator FieldValidator
+	 */
+	private $fieldValidator;
+
 
 	public function __construct() {
 
@@ -57,18 +62,20 @@ class ContentParser {
 	 * @param RaceSeries $raceSeries
 	 * @param SafetyTeams $safetyTeams
 	 */
-	public function init( $content, SailType $sailType, RaceSeries $raceSeries, SafetyTeams $safetyTeams ) {
+	public function init( \WP_Post $post, SailType $sailType, RaceSeries $raceSeries, SafetyTeams $safetyTeams ) {
 
-		if ( empty( trim( $content ) ) ) {
-			throw new \Exception( '$content is empty' );
+		if ( empty( trim( $post->post_content ) ) ) {
+			throw new \Exception( '$post->post_content is empty' );
 		}
 
-		$this->content     = $content;
+		$this->fieldValidator = SSCModsFactory::getFieldValidatorManager( $post) ;
+
+		$this->content     = $post->post_content;
 		$this->sailType    = $sailType;
 		$this->raceSeries  = $raceSeries;
 		$this->safetyTeams = $safetyTeams;
 	}
-
+	
 
 	/**
 	 * @param $csvLine string
@@ -111,22 +118,42 @@ class ContentParser {
 			if($line == 0 ){
 				$this->setHeader($dataLine);
 				$this->getHeaderCount();
+				$line ++;
+				continue;
 			}
 
 			if ( empty( trim( $dataLine ) ) ) {
 				break;
 			}
 
-			$data = explode( ",", $dataLine );
+			$tmpData = explode( ",", $dataLine );
 
-			if(count($data) !== (int) $this->headerCount ){
-				throw new \Exception('Line ' . $line . ' column count mismatch, expected ' . $this->getHeaderCount() . ' columns. ' );
+			if(count($tmpData) != $this->headerCount) {
+				throw new \Exception('Line ' . $line . ' column count mismatch, expected ' . $this->getHeaderCount() . ' columns. ' . $dataLine );
+			}
+
+			$i = 0;
+			foreach($tmpData as $i => $field){
+				$data[trim($this->header[$i])] = trim($field);
 			}
 
 			try {
 
-				/** @var $dto EventDTO */
-				$dto = new EventDTO( $line, $data, $this->sailType, $this->raceSeries, $this->safetyTeams );
+				// @todo better exception handling so this works for web and CLI
+
+				try {
+					$this->validateData($data);
+				} catch( \Exception $e ){
+					\WP_CLI::log( $e->getMessage() );
+				}
+
+				try {
+					/** @var $dto EventDTO */
+					$dto = new EventDTO( $line, $data, $this->sailType, $this->raceSeries, $this->safetyTeams );
+				} catch( \Exception $e ){
+					\WP_CLI::error( $e->getMessage() );
+				}
+
 
 				if( !$filter->filter( $dto ) ) continue;
 
@@ -139,5 +166,35 @@ class ContentParser {
 		}
 
 		return $out;
+	}
+
+	/**
+	 *
+	 * @param $data array
+	 *
+	 * For example where Day will map to a validator object.
+	 *
+	 * array(
+	 *   Day => Sun
+	 *   Date => 12/09/18
+	 *   Team => A
+	 * )
+	 */
+	private function validateData($data){
+
+		foreach($data as $fieldName => $value){
+
+			/** @var $validator FieldValidator */
+			$validator = $this->fieldValidator->getValidator($fieldName);
+
+			if(!$validator){
+
+				\WP_CLI::log( 'A validator for ' . $fieldName . ' does not exist, check the field name and field settings to see that they match.' );
+				continue;
+			}
+
+			$validator->validate( $value );
+		}
+
 	}
 }

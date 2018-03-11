@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit();
 }
 
-require_once( 'SSCProgrammeFactory.php' );
+require_once( SSC_MODS_PLUGIN_DIR . 'classes/SSCModsFactory.php' );
 
 class ProgrammeBase {
 
@@ -49,10 +49,10 @@ class ProgrammeBase {
 
 	public function __construct() {
 
-		$this->safetyTeams = SSCProgrammeFactory::getSafetyTeams();
-		$this->sailType    = SSCProgrammeFactory::getSailType();
-		//$this->sailFilter  = SSCProgrammeFactory::getSailTypeFilter();
-		$this->raceSeries  = SSCProgrammeFactory::getRaceSeries();
+		$this->safetyTeams = SSCModsFactory::getSafetyTeams();
+		$this->sailType    = SSCModsFactory::getSailType();
+		//$this->sailFilter  = SSCModsFactory::getSailTypeFilter();
+		$this->raceSeries  = SSCModsFactory::getRaceSeries();
 
 	}
 
@@ -80,13 +80,18 @@ class ProgrammeBase {
 		}
 
 		$post = $this->getPost( $this->post_id );
+		$postMeta = null;
 
 		if( !is_a($post, 'WP_Post') ) {
 			throw new \Exception ( '$this->post_id does not return a post object.' );
 		}
 
+		if($s = get_post_meta( $this->post_id, 'fields', true )){
+			$post->field_settings = parse_ini_string($s, true);
+		}
+
 		$this->flattenedEvents = $this->getEvents( $post, true, $filter );
-		
+
 	}
 
 
@@ -128,11 +133,15 @@ class ProgrammeBase {
 		/**
 		 * @var $contentParser ContentParser
 		 */
-		$contentParser = SSCProgrammeFactory::getContentParser( );
-		$contentParser->init($post->post_content, $this->sailType, $this->raceSeries, $this->safetyTeams );
-
+		$contentParser = SSCModsFactory::getContentParser( );
+		$contentParser->init($post, $this->sailType, $this->raceSeries, $this->safetyTeams );
 		$eventsData = $contentParser->getData( $filter );
 
+
+		/**
+		 * We might have +1 event per day, flattening will return a flat array of events, the default
+		 * is a nested array of events e.g. +1 event per date.
+		 */
 		if(!$flatten){
 			return $eventsData;
 		}
@@ -140,7 +149,6 @@ class ProgrammeBase {
 		$eventsDataFlattened = array();
 
 		foreach ( $eventsData['data'] as $date => $events ) {
-
 			/**
 			 * @var EventDTO $EventDTO
 			 */
@@ -148,6 +156,7 @@ class ProgrammeBase {
 				$eventsDataFlattened[] = $EventDTO;
 			}
 		}
+
 
 		return $eventsDataFlattened;
 	}

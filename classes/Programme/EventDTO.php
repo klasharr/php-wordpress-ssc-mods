@@ -12,8 +12,8 @@ namespace SSCMods;
 class EventDTO {
 
 
-	const INPUT_DATE_FORMAT = 'j/n/Y';
-	const OUTPUT_DATE_FORMAT = 'j/n/Y';
+	const INPUT_DATE_FORMAT = 'd/m/y';
+	const OUTPUT_DATE_FORMAT = 'd/m/y';
 
 	/**
 	 * @var string
@@ -210,26 +210,20 @@ class EventDTO {
 
 	private function setFromCSV( $data ) {
 
-		$columnsNumber = count( $this->CSVColumnMapping );
+		foreach($data as $fieldName => $value ){
 
-		// Dynamic getters and setters
-		for ( $i = 0; $i <= $columnsNumber; $i ++ ) {
-			$value = null;
+			$method = 'set' . $fieldName;
 
-			if ( ! empty( $data[ $i ] ) ) {
-
-				$method = 'set' . ucfirst( $this->CSVColumnMapping[ $i ] );
-
-				$value = trim( preg_replace( '/\s+/', ' ', $data[ $i ] ) );
-				if ( ! empty( $value ) ) {
-					try {
-						$this->$method( $value );
-					} catch ( \Exception $e ) {
-						throw new \Exception ( $e->getMessage() );
-					}
+			$value = trim( preg_replace( '/\s+/', ' ', $value ) );
+			if ( ! empty( $value ) ) {
+				try {
+					$this->$method( $value );
+				} catch ( \Exception $e ) {
+					throw new \Exception ( $e->getMessage() );
 				}
 			}
 		}
+
 	}
 
 	public function isJuniorTraining() {
@@ -440,7 +434,7 @@ class EventDTO {
 
 	public function __toString() {
 
-		return $this->getDay() . ', ' . $this->getDate() . ', ' . ', ' . $this->getTime() . ', '. $this->getEvent() . ', ' . $this->getTeam();
+		return $this->getDay() . ', ' . $this->getDate() . ', ' . $this->getTime() . ', '. $this->getEvent() . ', ' . $this->getTeam();
 
 	}
 }

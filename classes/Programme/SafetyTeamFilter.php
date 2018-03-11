@@ -2,7 +2,7 @@
 
 namespace SSCMods;
 
-require_once('Filter.php');
+require_once( SSC_MODS_PLUGIN_DIR . '/interfaces/Filter.php' );
 
 class SafetyTeamFilter implements \SSCMods\Filter {
 

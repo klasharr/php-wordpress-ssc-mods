@@ -10,31 +10,63 @@ require_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/ProgrammeBase.php' );
 
 Class SafetyDuties extends ProgrammeBase {
 
+	private $safetyTeamsData;
+
+	private $safety_teams_list_id;
+
+
 	public function __invoke( $args ) {
 
 		try {
 			parent::__invoke( $args );
-			$this->execute( \SSCMods\SSCProgrammeFactory::getSafetyTeamFilter() );
+
+			if(empty($args[1])){
+				throw new \Exception("You need a second argument");
+			}
+
+			$this->safety_teams_list_id = $args[1];
+
+			$this->getSafetyTeams($this->safety_teams_list_id );
+
+			$this->execute( \SSCMods\SSCModsFactory::getSafetyTeamFilter() );
 
 		} catch ( \Exception $e ) {
 			\WP_CLI::error( $e->getMessage() );
 		}
 
-		\WP_CLI::log( $this->getDutymanHeaders() );
+
+
 
 		/**
 		 * @var $event EventDTO
 		 */
 		foreach ( $this->flattenedEvents as $event ) {
 
-			$a = $this->getSingleSafetyDuty($event);
+			$team = $event->getTeam();
+
+			if(empty($this->safetyTeamsData['teams'][$team])){
+				throw new \Exception( 'Team data is missing' );
+			}
+
+			foreach($this->safetyTeamsData['teams'][$team] as $member){
+				print_r($member);
+
+			}
+die();
 
 			\WP_CLI::log( $this->getRow($this->getSingleSafetyDuty($event)));
 
-			//\WP_CLI::log( $event );
 		}
 
 		\WP_CLI::success( 'Success!!' );
+	}
+
+	private function getSafetyTeams( $post_id ){
+
+		$o = SSCModsFactory::getSafetyTeamsList();
+
+		$this->safetyTeamsData = $o->get( $post_id);
+
 	}
 
 
