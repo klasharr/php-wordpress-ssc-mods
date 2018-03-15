@@ -46,34 +46,34 @@ class SSCModsFactory {
 		return new \SSCMods\RaceSeries;
 	}
 
-	public static function getContentParser(){
+	public static function getContentParser() {
 		return new \SSCMods\ContentParser;
 	}
 
-	public static function getSafetyTeamFilter(){
+	public static function getSafetyTeamFilter() {
 		return new \SSCMods\SafetyTeamFilter;
 	}
 
-	public static function getFieldValidatorManager( \WP_Post $post ){
+	public static function getFieldValidatorManager( \WP_Post $post ) {
 		return new \SSCMods\Fields\FieldValidatorManager( $post );
 	}
-	
-	public static function getField( $className, $rules ){
 
-		$file = SSC_MODS_PLUGIN_DIR . 'classes/Fields/'. ucwords($rules['type']). 'Field.php';
+	public static function getField( $className, $rules ) {
 
-		if(!file_exists($file)){
-			throw new \Exception($file . ' does not exist');
+		$file = SSC_MODS_PLUGIN_DIR . 'classes/Fields/' . ucwords( $rules['type'] ) . 'Field.php';
+
+		if ( ! file_exists( $file ) ) {
+			throw new Exception( $file . ' does not exist' );
 		}
 
 		require_once( $file );
 
-		$className = '\SSCMods\Fields\\'.$className;
+		$className = '\SSCMods\Fields\\' . $className;
 
 		return new $className( $rules );
 	}
 
-	public static function getSafetyTeamsList(){
+	public static function getSafetyTeamsList() {
 		return new \SSCMods\SafetyTeamsList();
 	}
 }

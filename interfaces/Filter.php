@@ -9,6 +9,6 @@ interface Filter {
 	 *
 	 * @return bool
 	 */
-	public function filter(EventDTO $eventDTO);
+	public function filter( EventDTO $eventDTO );
 
 }

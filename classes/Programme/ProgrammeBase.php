@@ -2,9 +2,13 @@
 
 namespace SSCMods;
 
+Use WP_CLI;
+Use Exception;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit();
 }
+
 
 require_once( SSC_MODS_PLUGIN_DIR . 'classes/SSCModsFactory.php' );
 
@@ -52,14 +56,14 @@ class ProgrammeBase {
 		$this->safetyTeams = SSCModsFactory::getSafetyTeams();
 		$this->sailType    = SSCModsFactory::getSailType();
 		//$this->sailFilter  = SSCModsFactory::getSailTypeFilter();
-		$this->raceSeries  = SSCModsFactory::getRaceSeries();
+		$this->raceSeries = SSCModsFactory::getRaceSeries();
 
 	}
 
 	public function __invoke( $args ) {
 
 		if ( empty( $args[0] ) || (int) $args[0] === 0 ) {
-			throw new \Exception( 'The first argument must be a non zero integer value' );
+			throw new Exception( 'The first argument must be a non zero integer value' );
 		}
 
 		$this->post_id = $args[0];
@@ -69,25 +73,25 @@ class ProgrammeBase {
 	/**
 	 * @param Filter $filter
 	 *
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	protected function execute( $filter = false ) {
 
-		if( $filter !== false && ! ( $filter instanceof Filter ) ) {
-			throw new \Exception ( 'If an arg is present, execute must be passed a filter.' );
-		} elseif( $filter === false ){
+		if ( $filter !== false && ! ( $filter instanceof Filter ) ) {
+			throw new Exception ( 'If an arg is present, execute must be passed a filter.' );
+		} elseif ( $filter === false ) {
 			$filter = new NullFilter();
 		}
 
-		$post = $this->getPost( $this->post_id );
+		$post     = $this->getPost( $this->post_id );
 		$postMeta = null;
 
-		if( !is_a($post, 'WP_Post') ) {
-			throw new \Exception ( '$this->post_id does not return a post object.' );
+		if ( ! is_a( $post, 'WP_Post' ) ) {
+			throw new Exception ( '$this->post_id does not return a post object.' );
 		}
 
-		if($s = get_post_meta( $this->post_id, 'fields', true )){
-			$post->field_settings = parse_ini_string($s, true);
+		if ( $s = get_post_meta( $this->post_id, 'fields', true ) ) {
+			$post->field_settings = parse_ini_string( $s, true );
 		}
 
 		$this->flattenedEvents = $this->getEvents( $post, true, $filter );
@@ -106,15 +110,15 @@ class ProgrammeBase {
 		$post = get_post( $post_id );
 
 		if ( false === $post instanceof \WP_Post ) {
-			throw new \Exception( 'Post with ID %d does not exist.', $post_id );
+			throw new Exception( 'Post with ID %d does not exist.', $post_id );
 		}
 
 		if ( $post->post_type != 'sailing-programme' ) {
-			throw new \Exception( 'The post ID passed must be a post type: sailing-programme' );
+			throw new Exception( 'The post ID passed must be a post type: sailing-programme' );
 		}
 
 		if ( empty( $post->post_content ) ) {
-			throw new \Exception( sprintf( 'Sailing Programme with Post ID %d has no content.', $post_id ) );
+			throw new Exception( sprintf( 'Sailing Programme with Post ID %d has no content.', $post_id ) );
 		}
 
 		return $post;
@@ -133,8 +137,8 @@ class ProgrammeBase {
 		/**
 		 * @var $contentParser ContentParser
 		 */
-		$contentParser = SSCModsFactory::getContentParser( );
-		$contentParser->init($post, $this->sailType, $this->raceSeries, $this->safetyTeams );
+		$contentParser = SSCModsFactory::getContentParser();
+		$contentParser->init( $post, $this->sailType, $this->raceSeries, $this->safetyTeams );
 		$eventsData = $contentParser->getData( $filter );
 
 
@@ -142,7 +146,7 @@ class ProgrammeBase {
 		 * We might have +1 event per day, flattening will return a flat array of events, the default
 		 * is a nested array of events e.g. +1 event per date.
 		 */
-		if(!$flatten){
+		if ( ! $flatten ) {
 			return $eventsData;
 		}
 

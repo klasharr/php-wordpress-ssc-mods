@@ -49,7 +49,7 @@ class CSVParser {
 	 */
 	public function __construct( $CSVPath, SailType $sailType, RaceSeries $raceSeries, SafetyTeams $safetyTeams ) {
 		if ( ! file_exists( $CSVPath ) ) {
-			throw new \Exception( sprintf( 'File at path %s does not exist', $CSVPath ) );
+			throw new Exception( sprintf( 'File at path %s does not exist', $CSVPath ) );
 		}
 		$this->csvPath     = $CSVPath;
 		$this->sailType    = $sailType;
@@ -100,14 +100,14 @@ class CSVParser {
 		$handle = fopen( $this->csvPath, "r" );
 
 		if ( ! $handle ) {
-			throw new \Exception( 'Could not get handle for file: ' . $this->CSVPath );
+			throw new Exception( 'Could not get handle for file: ' . $this->CSVPath );
 		}
 
 		$line = 0;
 		while ( ( $data = fgetcsv( $handle ) ) !== false ) {
 			try {
 				$tmp[] = $o = new EventDTO( $line, $data, $this->sailType, $this->raceSeries, $this->safetyTeams );
-			} catch ( \Exception $e ) {
+			} catch ( Exception $e ) {
 				$out['errors'][] = 'CSV Error line: ' . $line . ' ' . $e->getMessage();
 			}
 			$line ++;

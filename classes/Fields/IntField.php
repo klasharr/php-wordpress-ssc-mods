@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit();
 }
 
-require_once('BaseField.php');
+require_once( 'BaseField.php' );
 include_once( SSC_MODS_PLUGIN_DIR . '/interfaces/FieldValidator.php' );
 
 class IntField extends BaseField implements FieldValidator {
@@ -15,7 +15,7 @@ class IntField extends BaseField implements FieldValidator {
 		parent::__construct( $data );
 	}
 
-	public function validate($value){
+	public function validate( $value ) {
 		parent::_validate( $value );
 	}
 

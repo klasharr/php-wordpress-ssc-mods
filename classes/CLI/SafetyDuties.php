@@ -2,9 +2,16 @@
 
 namespace SSCMods;
 
+Use WP_CLI;
+Use Exception;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit();
 }
+
+/**
+ * Duty Date,Duty Time,Event,Duty Type,Swappable,Reminders,Confirmed,Duty Notify,Duty Instructions,Duty DBID,First Name,Last Name,Member Name,Alloc,Notes
+ */
 
 require_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/ProgrammeBase.php' );
 
@@ -20,21 +27,19 @@ Class SafetyDuties extends ProgrammeBase {
 		try {
 			parent::__invoke( $args );
 
-			if(empty($args[1])){
-				throw new \Exception("You need a second argument");
+			if ( empty( $args[1] ) ) {
+				throw new Exception( "You need a second argument" );
 			}
 
 			$this->safety_teams_list_id = $args[1];
 
-			$this->getSafetyTeams($this->safety_teams_list_id );
+			$this->getSafetyTeams( $this->safety_teams_list_id );
 
 			$this->execute( \SSCMods\SSCModsFactory::getSafetyTeamFilter() );
 
-		} catch ( \Exception $e ) {
-			\WP_CLI::error( $e->getMessage() );
+		} catch ( Exception $e ) {
+			WP_CLI::error( $e->getMessage() );
 		}
-
-
 
 
 		/**
@@ -44,28 +49,47 @@ Class SafetyDuties extends ProgrammeBase {
 
 			$team = $event->getTeam();
 
-			if(empty($this->safetyTeamsData['teams'][$team])){
-				throw new \Exception( 'Team data is missing' );
+
+			if ( empty( $this->safetyTeamsData['teams'][ $team ] ) ) {
+				throw new Exception( 'Team data is missing for team ' . $team );
 			}
 
-			foreach($this->safetyTeamsData['teams'][$team] as $member){
-				print_r($member);
 
+			foreach ( $this->safetyTeamsData['teams'][ $team ] as $member ) {
+
+				$duty_type = 'Crew';
+
+				if ( ! empty( $member['Rib Driver'] ) ) {
+					$duty_type = 'Rib Driver';
+				}
+
+				if ( ! empty( $member['Beach Master'] ) ) {
+					$duty_type = 'Beach Master';
+				}
+
+				WP_CLI::log( $this->getRow(
+					$this->getSingleSafetyDuty(
+						$event,
+						$member['First Name'],
+						$member['Second name'],
+						$member['Email Address'],
+						$duty_type,
+						$team
+					) )
+				);
 			}
-die();
 
-			\WP_CLI::log( $this->getRow($this->getSingleSafetyDuty($event)));
 
 		}
 
-		\WP_CLI::success( 'Success!!' );
+		WP_CLI::success( 'Success!!' );
 	}
 
-	private function getSafetyTeams( $post_id ){
+	private function getSafetyTeams( $post_id ) {
 
 		$o = SSCModsFactory::getSafetyTeamsList();
 
-		$this->safetyTeamsData = $o->get( $post_id);
+		$this->safetyTeamsData = $o->get( $post_id );
 
 	}
 
@@ -75,29 +99,30 @@ die();
 	 *
 	 * @return array
 	 */
-	private function getSingleSafetyDuty( EventDTO $dto ) {
+	private function getSingleSafetyDuty( EventDTO $dto, $firstname, $lastname, $email, $duty_type, $team = null ) {
 
 		return array(
 			'Duty Date'         => $dto->getDate(),
 			'Duty Time'         => $this->getDutyTime( $dto ),
 			'Event'             => $dto->getEvent(),
-			'Duty Type'         => 'Safety', // Yes A brief description of the duty, for example Race Officer, Results, Bar
+			'Duty Type'         => $duty_type,
+			// Yes A brief description of the duty, for example Race Officer, Results, Bar
 			'Swappable'         => 'Yes',
 			'Reminders'         => 'Yes',
 			'Confirmed'         => '',
 			'Duty Notify'       => '',
 			'Duty Instructions' => 'Please only swap like for like duties. If you have any questions please contact your Team Leader.',
 			'Duty DBID'         => '',
-			'First Name'        => '',
-			'Last Name'         => '',
-			'Member Name'       => '',
+			'First Name'        => $firstname,
+			'Last Name'         => $lastname,
+			'Member Name'       => $firstname . ' ' . $lastname,
 			'Alloc'             => '',
 			'Notes'             => ''
 		);
 
 	}
 
-	private function getDutymanHeaders(){
+	private function getDutymanHeaders() {
 
 		$a = array(
 			'Duty Date'         => '',
@@ -146,7 +171,7 @@ die();
 				return '12:30';
 				break;
 			default:
-				\WP_CLI::error( 'Invalid time ' . $dto );
+				WP_CLI::error( 'Invalid time ' . $dto );
 		}
 	}
 
@@ -158,38 +183,6 @@ die();
 		return implode( ',', array_values( $a ) );
 
 	}
-
-	/**
-	private function getDuties() {
-
-
-		foreach ( $events as $EventDTO ) {
-
-
-			 * if( ONLY_HOUSE_DUTY && !$EventDTO->isEventForHouseDuty() ) {
-			 * continue;
-			 * }
-
-
-			$linesForCSV[] = array(
-				'date'  => $EventDTO->getDate(),
-				'day'   => $EventDTO->weekday,
-				'event' => $EventDTO->getEvent(),
-				'team'  => $EventDTO->getTeam(),
-				'type'  => $EventDTO->getTypeName(),
-				'time'  => $EventDTO->getTime(),
-			);
-
-			$this->getHouseDuties( $EventDTO );
-
-			$EventDTO    = false;
-			$linesForCSV = array();
-
-		}
-
-	}
-	 ***/
-
 
 }
 

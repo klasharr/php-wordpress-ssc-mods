@@ -2,6 +2,8 @@
 
 namespace SSCMods\Fields;
 
+use Exception;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit();
 }
@@ -28,47 +30,46 @@ abstract class BaseField {
 	 */
 	private $required = false;
 
-	public function __construct($data) {
+	public function __construct( $data ) {
 
 		$this->data = $data;
 
-		if(isset( $this->data['options' ] ) && !array( $this->data['options' ] ) ) {
-			throw new \Exception('options is not an array' );
+		if ( isset( $this->data['options'] ) && ! array( $this->data['options'] ) ) {
+			throw new Exception( 'options is not an array' );
 		}
 
 
-
-		if( isset($this->data['options' ] ) ){
-			$this->options = explode(',', $this->data['options' ]);
+		if ( isset( $this->data['options'] ) ) {
+			$this->options = explode( ',', $this->data['options'] );
 		}
 
 		$this->type = $data['type'];
 
-		if( !empty($this->data['required']) ){
+		if ( ! empty( $this->data['required'] ) ) {
 			$this->required = true;
 		}
 	}
 
 	protected function _validate( $value ) {
 
-		if( $this->isRequired() && empty($value)){
-			throw new \Exception('Data error in field '. $this->data['field_name'] . ' requires value' );
+		if ( $this->isRequired() && empty( $value ) ) {
+			throw new Exception( 'Data error in field ' . $this->data['field_name'] . ' requires value' );
 		}
 
 		$this->stringHasValidLength( $value );
 		$this->hasValidOption( $value );
 	}
 
-	private function hasValidOption( $value ){
+	private function hasValidOption( $value ) {
 
-		if( $this->hasOptions() && !empty( $value ) ) {
-			if( !$this->isValidOption($value)){
-				throw new \Exception('Data error in field '. $this->data['field_name'] .' if present, expected one of "' . $this->getOptions( true ) .'" got "'. $value . '"');
+		if ( $this->hasOptions() && ! empty( $value ) ) {
+			if ( ! $this->isValidOption( $value ) ) {
+				throw new Exception( 'Data error in field ' . $this->data['field_name'] . ' if present, expected one of "' . $this->getOptions( true ) . '" got "' . $value . '"' );
 			}
 		}
 	}
 
-	public function getType(){
+	public function getType() {
 		return $this->type;
 	}
 
@@ -77,12 +78,12 @@ abstract class BaseField {
 	 *
 	 * @return bool
 	 */
-	abstract function validate($value);
+	abstract function validate( $value );
 
-	protected function isValidOption( $value ){
+	protected function isValidOption( $value ) {
 
-		if(empty($this->options)){
-			throw new \Exception('Data error in field '. $this->data['field_name'] .'is missing options.' );
+		if ( empty( $this->options ) ) {
+			throw new Exception( 'Data error in field ' . $this->data['field_name'] . 'is missing options.' );
 		}
 
 		return in_array( $value, $this->options );
@@ -96,8 +97,8 @@ abstract class BaseField {
 	 *
 	 * @return bool
 	 */
-	public function hasOptions(){
-		return count($this->options) > 0 ? true: false;
+	public function hasOptions() {
+		return count( $this->options ) > 0 ? true : false;
 	}
 
 	/**
@@ -107,14 +108,14 @@ abstract class BaseField {
 	 *
 	 * @return array|string
 	 */
-	public function getOptions($string = false ){
+	public function getOptions( $string = false ) {
 
-		if(empty($this->options)){
-			throw new \Exception('There are no options for defined for this field type');
+		if ( empty( $this->options ) ) {
+			throw new Exception( 'There are no options for defined for this field type' );
 		}
 
-		if($string){
-			return implode(',' , $this->options);
+		if ( $string ) {
+			return implode( ',', $this->options );
 		} else {
 			return $this->options;
 		}
@@ -123,24 +124,24 @@ abstract class BaseField {
 	/**
 	 * @return string\null
 	 */
-	public function getMessage(){
+	public function getMessage() {
 		return $this->errorMessage;
 	}
 
-	protected function isValidInt( $value ){
+	protected function isValidInt( $value ) {
 
 		return is_numeric( $value ) ? true : false;
 
 	}
 
 
-	public function isRequired(){
+	public function isRequired() {
 		return $this->required;
 	}
 
-	protected function stringHasValidLength( $value ){
-		if( isset($this->data[ 'max-length' ]) && !empty( $value ) && strlen( $value ) >  $this->data[ 'max-length' ] ){
-			throw new \Exception('Data error in field ' . $this->data['field_name']  . ' value too long, a max length of  ' . $this->data[ 'max-length' ] . ' is expected. ' . strlen( $value ) . ' given. Value: "' . $value . '"');
+	protected function stringHasValidLength( $value ) {
+		if ( isset( $this->data['max-length'] ) && ! empty( $value ) && strlen( $value ) > $this->data['max-length'] ) {
+			throw new Exception( 'Data error in field ' . $this->data['field_name'] . ' value too long, a max length of  ' . $this->data['max-length'] . ' is expected. ' . strlen( $value ) . ' given. Value: "' . $value . '"' );
 		}
 	}
 }

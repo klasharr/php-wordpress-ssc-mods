@@ -30,7 +30,7 @@ function ssc_mods_display_sailing_programme( $content ) {
 
 		try {
 
-			$contentParser = \SSCMods\SSCModsFactory::getContentParser( );
+			$contentParser = \SSCMods\SSCModsFactory::getContentParser();
 
 			$contentParser->init(
 				$post->post_content,

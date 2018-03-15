@@ -2,6 +2,9 @@
 
 namespace SSCMods;
 
+Use WP_CLI;
+Use Exception;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit();
 }
@@ -41,35 +44,35 @@ class SafetyTeamsList {
 	 * @var $fieldValidatorManager fieldValidatorManager
 	 */
 	private $fieldValidatorManager;
-	
+
 
 	/**
 	 * @param Filter $filter
 	 *
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function get( $post_id, $filter = false ) {
 
 		$this->post_id = $post_id;
 
-		if( $filter !== false && ! ( $filter instanceof Filter ) ) {
-			throw new \Exception ( 'If an arg is present, execute must be passed a filter.' );
-		} elseif( $filter === false ){
+		if ( $filter !== false && ! ( $filter instanceof Filter ) ) {
+			throw new Exception ( 'If an arg is present, execute must be passed a filter.' );
+		} elseif ( $filter === false ) {
 			$filter = new NullFilter();
 		}
 
-		$post = $this->getPost( $this->post_id );
+		$post     = $this->getPost( $this->post_id );
 		$postMeta = null;
 
-		if( !is_a($post, 'WP_Post') ) {
-			throw new \Exception ( '$this->post_id does not return a post object.' );
+		if ( ! is_a( $post, 'WP_Post' ) ) {
+			throw new Exception ( '$this->post_id does not return a post object.' );
 		}
 
-		if($s = get_post_meta( $this->post_id, 'fields', true )){
-			$post->field_settings = parse_ini_string($s, true);
+		if ( $s = get_post_meta( $this->post_id, 'fields', true ) ) {
+			$post->field_settings = parse_ini_string( $s, true );
 		}
 
-		$this->fieldValidatorManager = SSCModsFactory::getFieldValidatorManager( $post) ;
+		$this->fieldValidatorManager = SSCModsFactory::getFieldValidatorManager( $post );
 
 		$this->rows = $this->getRows( $post, $filter );
 
@@ -89,15 +92,15 @@ class SafetyTeamsList {
 		$post = get_post( $post_id );
 
 		if ( false === $post instanceof \WP_Post ) {
-			throw new \Exception( 'Post with ID %d does not exist.', $post_id );
+			throw new Exception( 'Post with ID %d does not exist.', $post_id );
 		}
 
 		if ( $post->post_type != 'sailing-programme' ) {
-			throw new \Exception( 'The post ID passed must be a post type: sailing-programme' );
+			throw new Exception( 'The post ID passed must be a post type: sailing-programme' );
 		}
 
 		if ( empty( $post->post_content ) ) {
-			throw new \Exception( sprintf( 'Sailing Programme with Post ID %d has no content.', $post_id ) );
+			throw new Exception( sprintf( 'Sailing Programme with Post ID %d has no content.', $post_id ) );
 		}
 
 		return $post;
@@ -120,8 +123,8 @@ class SafetyTeamsList {
 		$line = 0;
 		foreach ( $dataArray as $dataLine ) {
 
-			if($line == 0 ){
-				$this->setHeader($dataLine);
+			if ( $line == 0 ) {
+				$this->setHeader( $dataLine );
 				$this->getHeaderCount();
 				$line ++;
 				continue;
@@ -133,28 +136,28 @@ class SafetyTeamsList {
 
 			$tmpData = explode( ",", $dataLine );
 
-			if(count($tmpData) != $this->headerCount) {
-				throw new \Exception('Line ' . $line . ' column count mismatch, expected ' . $this->getHeaderCount() . ' columns, got ' . count($tmpData) . '. '. $dataLine );
+			if ( count( $tmpData ) != $this->headerCount ) {
+				throw new Exception( 'Line ' . $line . ' column count mismatch, expected ' . $this->getHeaderCount() . ' columns, got ' . count( $tmpData ) . '. ' . $dataLine );
 			}
 
 			$i = 0;
-			foreach($tmpData as $i => $field){
-				$data[trim($this->header[$i])] = trim($field);
+			foreach ( $tmpData as $i => $field ) {
+				$data[ trim( $this->header[ $i ] ) ] = trim( $field );
 			}
 
 			// @todo better exception handling so this works for web and CLI
 
 			try {
-				$this->validateData($data);
-			} catch( \Exception $e ){
-				\WP_CLI::log( 'Line ' . $line .' ' . $e->getMessage() );
+				$this->validateData( $data );
+			} catch ( Exception $e ) {
+				WP_CLI::log( 'Line ' . $line . ' ' . $e->getMessage() );
 			}
 
 			try {
-				$out['rows'] = $data;
-				$out['teams'][$data['Team']][] = $data;
-			} catch( \Exception $e ){
-				\WP_CLI::error( $e->getMessage() );
+				$out['rows']                     = $data;
+				$out['teams'][ $data['Team'] ][] = $data;
+			} catch ( Exception $e ) {
+				WP_CLI::error( $e->getMessage() );
 			}
 
 			$line ++;
@@ -176,16 +179,16 @@ class SafetyTeamsList {
 	 *   Team => A
 	 * )
 	 */
-	private function validateData($data){
+	private function validateData( $data ) {
 
-		foreach($data as $fieldName => $value){
+		foreach ( $data as $fieldName => $value ) {
 
 			/** @var $validator FieldValidator */
-			$validator = $this->fieldValidatorManager->getValidator($fieldName);
+			$validator = $this->fieldValidatorManager->getValidator( $fieldName );
 
-			if(!$validator){
+			if ( ! $validator ) {
 
-				\WP_CLI::log( 'A validator for ' . $fieldName . ' does not exist, check the field name and field settings to see that they match.' );
+				WP_CLI::log( 'A validator for ' . $fieldName . ' does not exist, check the field name and field settings to see that they match.' );
 				continue;
 			}
 
@@ -197,22 +200,22 @@ class SafetyTeamsList {
 	/**
 	 * @param $csvLine string
 	 */
-	private function setHeader($csvLine){
-		$this->header = explode( ",", $csvLine );
-		$this->headerCount = count($this->header);
+	private function setHeader( $csvLine ) {
+		$this->header      = explode( ",", $csvLine );
+		$this->headerCount = count( $this->header );
 	}
 
 	/**
 	 * @return array
 	 */
-	private function getHeader(){
+	private function getHeader() {
 		return $this->header;
 	}
 
 	/**
 	 * @return int|null
 	 */
-	private function getHeaderCount(){
+	private function getHeaderCount() {
 		return $this->headerCount;
 	}
 

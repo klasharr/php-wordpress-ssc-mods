@@ -6,6 +6,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit();
 }
 
+Use WP_CLI;
+Use Exception;
+
 include_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/ProgrammeBase.php' );
 
 Class HouseDuties extends ProgrammeBase {
@@ -16,15 +19,15 @@ Class HouseDuties extends ProgrammeBase {
 			parent::__invoke( $args );
 			parent::execute();
 
-		} catch ( \Exception $e ) {
-			\WP_CLI::error( $e->getMessage() );
+		} catch ( Exception $e ) {
+			WP_CLI::error( $e->getMessage() );
 		}
 
 		foreach ( $this->flattenedEvents as $event ) {
-			\WP_CLI::log( $event );
+			WP_CLI::log( $event );
 		}
 
-		\WP_CLI::success( 'Success!!' );
+		WP_CLI::success( 'Success!!' );
 	}
 
 
@@ -87,7 +90,7 @@ Class HouseDuties extends ProgrammeBase {
 				return '1145';
 				break;
 			default:
-				\WP_CLI::warning( 'Invalid time ' . $dto );
+				WP_CLI::warning( 'Invalid time ' . $dto );
 		}
 	}
 

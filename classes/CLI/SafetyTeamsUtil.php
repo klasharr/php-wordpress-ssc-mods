@@ -2,6 +2,8 @@
 
 namespace SSCMods;
 
+use WP_CLI;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit();
 }
@@ -28,27 +30,27 @@ class SafetyTeamsUtil {
 	public function __invoke( $args ) {
 
 		if ( empty( $args[0] ) || (int) $args[0] === 0 ) {
-			throw new \Exception( 'The first argument must be a non zero integer value' );
+			throw new Exception( 'The first argument must be a non zero integer value' );
 		}
 
 		$this->post_id = $args[0];
 
 
-		try{
+		try {
 
 			$o = SSCModsFactory::getSafetyTeamsList();
 
 			$rows = $o->get( $this->post_id );
 
-			print_r($rows);
+			//print_r($rows);
 
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 
-			\WP_CLI::error( $e->getMessage() );
+			WP_CLI::error( $e->getMessage() );
 
 		}
 
-		\WP_CLI::success( 'Success!!' );
+		WP_CLI::success( 'Success!!' );
 
 	}
 

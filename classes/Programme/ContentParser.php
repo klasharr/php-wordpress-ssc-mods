@@ -2,6 +2,9 @@
 
 namespace SSCMods;
 
+use WP_CLI;
+use Exception;
+
 /**
  * Idea, pass in a column scheme plan with validation rules for each column.
  *
@@ -65,37 +68,37 @@ class ContentParser {
 	public function init( \WP_Post $post, SailType $sailType, RaceSeries $raceSeries, SafetyTeams $safetyTeams ) {
 
 		if ( empty( trim( $post->post_content ) ) ) {
-			throw new \Exception( '$post->post_content is empty' );
+			throw new Exception( '$post->post_content is empty' );
 		}
 
-		$this->fieldValidator = SSCModsFactory::getFieldValidatorManager( $post) ;
+		$this->fieldValidator = SSCModsFactory::getFieldValidatorManager( $post );
 
 		$this->content     = $post->post_content;
 		$this->sailType    = $sailType;
 		$this->raceSeries  = $raceSeries;
 		$this->safetyTeams = $safetyTeams;
 	}
-	
+
 
 	/**
 	 * @param $csvLine string
 	 */
-	private function setHeader($csvLine){
-		$this->header = explode( ",", $csvLine );
-		$this->headerCount = count($this->header);
+	private function setHeader( $csvLine ) {
+		$this->header      = explode( ",", $csvLine );
+		$this->headerCount = count( $this->header );
 	}
 
 	/**
 	 * @return array
 	 */
-	private function getHeader(){
+	private function getHeader() {
 		return $this->header;
 	}
 
 	/**
 	 * @return int|null
 	 */
-	private function getHeaderCount(){
+	private function getHeaderCount() {
 		return $this->headerCount;
 	}
 
@@ -115,8 +118,8 @@ class ContentParser {
 		$line = 0;
 		foreach ( $dataArray as $dataLine ) {
 
-			if($line == 0 ){
-				$this->setHeader($dataLine);
+			if ( $line == 0 ) {
+				$this->setHeader( $dataLine );
 				$this->getHeaderCount();
 				$line ++;
 				continue;
@@ -128,13 +131,13 @@ class ContentParser {
 
 			$tmpData = explode( ",", $dataLine );
 
-			if(count($tmpData) != $this->headerCount) {
-				throw new \Exception('Line ' . $line . ' column count mismatch, expected ' . $this->getHeaderCount() . ' columns. ' . $dataLine );
+			if ( count( $tmpData ) != $this->headerCount ) {
+				throw new Exception( 'Line ' . $line . ' column count mismatch, expected ' . $this->getHeaderCount() . ' columns. ' . $dataLine );
 			}
 
 			$i = 0;
-			foreach($tmpData as $i => $field){
-				$data[trim($this->header[$i])] = trim($field);
+			foreach ( $tmpData as $i => $field ) {
+				$data[ trim( $this->header[ $i ] ) ] = trim( $field );
 			}
 
 			try {
@@ -142,25 +145,29 @@ class ContentParser {
 				// @todo better exception handling so this works for web and CLI
 
 				try {
-					$this->validateData($data);
-				} catch( \Exception $e ){
-					\WP_CLI::log( $e->getMessage() );
+					$this->validateData( $data );
+				} catch ( Exception $e ) {
+					WP_CLI::log( $e->getMessage() );
 				}
 
 				try {
+
+
 					/** @var $dto EventDTO */
 					$dto = new EventDTO( $line, $data, $this->sailType, $this->raceSeries, $this->safetyTeams );
-				} catch( \Exception $e ){
-					\WP_CLI::error( $e->getMessage() );
+
+				} catch ( Exception $e ) {
+					WP_CLI::error( $e->getMessage() );
 				}
 
-
-				if( !$filter->filter( $dto ) ) continue;
+				if ( ! $filter->filter( $dto ) ) {
+					continue;
+				}
 
 				$out['data'][ $dto->getDate() ][] = $dto;
 
-			} catch ( \Exception $e ) {
-				$out['errors'][] = sprintf('Error line: %d %s', $line, $e->getMessage());
+			} catch ( Exception $e ) {
+				$out['errors'][] = sprintf( 'Error line: %d %s', $line, $e->getMessage() );
 			}
 			$line ++;
 		}
@@ -180,16 +187,16 @@ class ContentParser {
 	 *   Team => A
 	 * )
 	 */
-	private function validateData($data){
+	private function validateData( $data ) {
 
-		foreach($data as $fieldName => $value){
+		foreach ( $data as $fieldName => $value ) {
 
 			/** @var $validator FieldValidator */
-			$validator = $this->fieldValidator->getValidator($fieldName);
+			$validator = $this->fieldValidator->getValidator( $fieldName );
 
-			if(!$validator){
+			if ( ! $validator ) {
 
-				\WP_CLI::log( 'A validator for ' . $fieldName . ' does not exist, check the field name and field settings to see that they match.' );
+				WP_CLI::log( 'A validator for ' . $fieldName . ' does not exist, check the field name and field settings to see that they match.' );
 				continue;
 			}
 

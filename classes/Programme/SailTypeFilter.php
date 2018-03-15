@@ -51,18 +51,18 @@ class SailTypeFilter {
 	) {
 
 		if ( ! is_array( $sailEventTypes ) ) {
-			throw new \Exception( sprintf( 'Invalid argument. If set, $sailEventTypes must be an array' ) );
+			throw new Exception( sprintf( 'Invalid argument. If set, $sailEventTypes must be an array' ) );
 		}
 		if ( ! is_array( $teams ) ) {
-			throw new \Exception( sprintf( 'Invalid argument. If set, $teams must be an array' ) );
+			throw new Exception( sprintf( 'Invalid argument. If set, $teams must be an array' ) );
 		}
 
 		if ( ! $sailType->isValid( $sailEventTypes ) ) {
-			throw new \Exception( sprintf( '%s invalid sailing event type(s)', print_r( $sailEventTypes, 1 ) ) );
+			throw new Exception( sprintf( '%s invalid sailing event type(s)', print_r( $sailEventTypes, 1 ) ) );
 		}
 
 		if ( ! $safetyTeams->isValid( $teams ) ) {
-			throw new \Exception( sprintf( '%s invalid safety team(s)', print_r( $teams, 1 ) ) );
+			throw new Exception( sprintf( '%s invalid safety team(s)', print_r( $teams, 1 ) ) );
 		}
 
 		$this->sailEventTypes = $sailEventTypes;

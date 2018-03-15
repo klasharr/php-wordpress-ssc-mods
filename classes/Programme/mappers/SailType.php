@@ -88,7 +88,7 @@ class SailType {
 	public function get( EventDTO $dto ) {
 		$event = trim( $dto->getEvent() );
 		if ( empty( $event ) ) {
-			throw new \Exception( 'Event is empty.' );
+			throw new Exception( 'Event is empty.' );
 		}
 
 
@@ -172,7 +172,7 @@ class SailType {
 			return self::OTHER;
 		}
 
-		throw new \Exception( $dto->getEvent() . ' is not a recognised event' );
+		throw new Exception( $dto->getEvent() . ' is not a recognised event' );
 	}
 
 	/**

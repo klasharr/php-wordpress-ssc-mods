@@ -2,6 +2,8 @@
 
 namespace SSCMods;
 
-class ValidatorException extends \Exception {
-	
+Use Exception;
+
+class ValidatorException extends Exception {
+
 }

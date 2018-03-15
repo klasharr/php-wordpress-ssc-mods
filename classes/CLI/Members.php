@@ -6,6 +6,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit();
 }
 
+Use WP_CLI;
+Use Exception;
+
 include_once( SSC_MODS_PLUGIN_DIR . '/classes/Duties/Importer.php' );
 define( 'MEMBERS_FILE', SSC_MODS_PLUGIN_DIR . 'classes/2018_safety_teams.csv' );
 
@@ -13,24 +16,23 @@ class Members {
 
 	public function __invoke( $args ) {
 
-		try{
+		try {
 
-			\WP_CLI::debug(MEMBERS_FILE);
+			WP_CLI::debug( MEMBERS_FILE );
 
 			$o = new \SSCMod\Duties\Importer( MEMBERS_FILE );
 
 
-			print_r($o->setTeamMembers());
+			//print_r($o->setTeamMembers());
 
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 
-			\WP_CLI::error( $e->getMessage() );
+			WP_CLI::error( $e->getMessage() );
 
 		}
 
-		\WP_CLI::success( 'Success!!' );
+		WP_CLI::success( 'Success!!' );
 	}
-
 
 
 }

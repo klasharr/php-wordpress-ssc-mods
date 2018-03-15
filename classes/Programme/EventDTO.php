@@ -2,6 +2,9 @@
 
 namespace SSCMods;
 
+use WP_CLI;
+use Exception;
+
 /**
  * Class EventDTO
  *
@@ -12,7 +15,7 @@ namespace SSCMods;
 class EventDTO {
 
 
-	const INPUT_DATE_FORMAT = 'd/m/y';
+	const INPUT_DATE_FORMAT = 'm/d/y';
 	const OUTPUT_DATE_FORMAT = 'd/m/y';
 
 	/**
@@ -73,21 +76,6 @@ class EventDTO {
 	 * @var bool
 	 */
 	private $isThursOrSunRace = false;
-
-	/**
-	 * @var array
-	 */
-	private $CSVColumnMapping = array(
-
-		'0' => 'day',
-		'1' => 'date',
-		'2' => 'event',
-		'3' => 'time',
-		//'4' => 'endtime',
-		'4' => 'team',
-		'5' => 'isJunior',
-		'6' => 'note',
-	);
 
 	public $colour;
 
@@ -152,7 +140,7 @@ class EventDTO {
 	function __construct( $line, array $CSVRowData, SailType $sailType, RaceSeries $raceSeries, SafetyTeams $safetyTeams ) {
 
 		if ( ! array( $CSVRowData ) || empty( $CSVRowData ) ) {
-			throw new \Exception( '$data is not an array or empty' );
+			throw new Exception( '$data is not an array or empty' );
 		}
 
 		$this->CSVRowData = $CSVRowData;
@@ -210,7 +198,7 @@ class EventDTO {
 
 	private function setFromCSV( $data ) {
 
-		foreach($data as $fieldName => $value ){
+		foreach ( $data as $fieldName => $value ) {
 
 			$method = 'set' . $fieldName;
 
@@ -218,8 +206,8 @@ class EventDTO {
 			if ( ! empty( $value ) ) {
 				try {
 					$this->$method( $value );
-				} catch ( \Exception $e ) {
-					throw new \Exception ( $e->getMessage() );
+				} catch ( Exception $e ) {
+					throw new Exception ( $e->getMessage() );
 				}
 			}
 		}
@@ -287,16 +275,16 @@ class EventDTO {
 	 */
 	public function setDate( $date ) {
 
-		if ( !empty($date) && ! $d = \DateTime::createFromFormat( self::INPUT_DATE_FORMAT, $date ) ) {
-			throw new \Exception( sprintf( 'Bad date format %s', $date ) );
+		if ( ! empty( $date ) && ! $d = \DateTime::createFromFormat( self::INPUT_DATE_FORMAT, $date ) ) {
+			throw new Exception( sprintf( 'Bad date format %s', $date ) );
 		}
 
-		$month = $d->format( 'n' );
-		$day   = $d->format( 'j' );
+		$month = $d->format( 'd' );
+		$day   = $d->format( 'm' );
 		$year  = $d->format( 'Y' );
 
-		if ( ! checkdate( $month, $day, $year ) ) {
-			throw new \Exception( 'Invalidate date ' . $date );
+		if ( ! checkdate( $day, $month, $year ) ) {
+			throw new Exception( 'Invalidate date ' . $date );
 		}
 		$this->date = $d->format( self::OUTPUT_DATE_FORMAT );
 
@@ -434,7 +422,7 @@ class EventDTO {
 
 	public function __toString() {
 
-		return $this->getDay() . ', ' . $this->getDate() . ', ' . $this->getTime() . ', '. $this->getEvent() . ', ' . $this->getTeam();
+		return $this->getDay() . ', ' . $this->getDate() . ', ' . $this->getTime() . ', ' . $this->getEvent() . ', ' . $this->getTeam();
 
 	}
 }
