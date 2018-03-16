@@ -2,9 +2,9 @@
 
 namespace SSCMods\Fields;
 
-Use WP_CLI;
-Use WP_Post;
-Use Exception;
+Use \WP_CLI;
+Use \WP_Post;
+Use \Exception;
 
 class FieldValidatorManager {
 

@@ -26,7 +26,7 @@ class FullEventsTable {
 	}
 
 
-	public static function getRow( day $day ) {
+	public static function getRow( day $day, int $line, array $errors ) {
 
 		$out = '';
 
@@ -42,8 +42,13 @@ class FullEventsTable {
 				self::$teamcount ++;
 			}
 
-			$style    = '';
 			$class    = '';
+
+			if(!empty($errors[$line])){
+				$class = '';
+			}
+
+			$style    = '';
 			$rowStyle = '';
 			if ( $dto->isAdultStartRaceTraining() ) {
 				$style = "style='background-color:#FFE87C';";
@@ -60,7 +65,7 @@ class FullEventsTable {
 			}
 
 
-			$out .= sprintf( '<tr %s class="%s">', $rowStyle, $class );
+			$out .= sprintf( '<tr id="%s" %s class="%s">', 'row'.$line, $rowStyle, $class );
 			$out .= sprintf( '<td %s>%s</td>', $firstColStyle, $dto->weekday );
 			$out .= sprintf( '<td>%s</td>', $dto->getDate() );
 
@@ -75,12 +80,12 @@ class FullEventsTable {
 			$out .= sprintf( '<td>%s</td>', $dto->getTeam() );
 
 			if ( $dto->isJuniorTraining() ) {
-				$class = 'junior-training';
+				$class .= ' junior-training';
 			}
 
 			$out .= sprintf( '<td class="event %s">%s</td>', $class, self::getJuniorEvent( $dto ) );
 			$out .= sprintf( '<td class="%s">%s</td>', $class, self::getJuniorTime( $dto ) );
-			$out .= '</tr>';
+			$out .= "</tr>\n";
 		}
 
 		return $out;
@@ -194,6 +199,10 @@ table#results tr.race-training {
 
 table#results .cup {
 color: purple
+}
+
+table#results .rowerror{
+	border: 3px solid red !important;
 }
 
 table#results .junior-training{

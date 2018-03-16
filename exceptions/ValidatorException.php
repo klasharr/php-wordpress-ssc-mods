@@ -1,6 +1,6 @@
 <?php
 
-namespace SSCMods;
+namespace SSCMods\Fields;
 
 Use Exception;
 

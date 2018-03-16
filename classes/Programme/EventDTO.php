@@ -115,6 +115,11 @@ class EventDTO {
 	private $safetyTeams;
 
 	/**
+	 * @var $line int
+	 */
+	private $line;
+
+	/**
 	 * @return string
 	 */
 	public function getEndtime() {
@@ -145,6 +150,7 @@ class EventDTO {
 
 		$this->CSVRowData = $CSVRowData;
 		$this->setFromCSV( $this->CSVRowData );
+		$this->line = $line;
 
 		$this->sailType    = $sailType;
 		$this->safetyTeams = $safetyTeams;
@@ -276,7 +282,7 @@ class EventDTO {
 	public function setDate( $date ) {
 
 		if ( ! empty( $date ) && ! $d = \DateTime::createFromFormat( self::INPUT_DATE_FORMAT, $date ) ) {
-			throw new Exception( sprintf( 'Bad date format %s', $date ) );
+			throw new DTOLineItemException( sprintf( 'Bad date format %s', $date ) );
 		}
 
 		$month = $d->format( 'd' );

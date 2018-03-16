@@ -67,7 +67,8 @@ class EventsPage {
 
 		$out = '<div class="errors"><h3>Errors</h3>';
 		foreach ( $errors as $error ) {
-			$out .= sprintf( '%s <br/>', $error );
+
+			$out .= sprintf( '%s <br/>', $error[ 'error' ] );
 		}
 		$out .= '</div>';
 

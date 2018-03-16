@@ -137,7 +137,7 @@ class SafetyTeamsList {
 			$tmpData = explode( ",", $dataLine );
 
 			if ( count( $tmpData ) != $this->headerCount ) {
-				throw new Exception( 'Line ' . $line . ' column count mismatch, expected ' . $this->getHeaderCount() . ' columns, got ' . count( $tmpData ) . '. ' . $dataLine );
+				throw new Exception( 'Line ' . $line . ' column count mismatch, expected ' . $this->getHeaderCount() . ' columns, got ' . count( $tmpData ) . '. Header columns are: ' . $this->getHeader(true) . $dataLine );
 			}
 
 			$i = 0;
@@ -188,7 +188,7 @@ class SafetyTeamsList {
 
 			if ( ! $validator ) {
 
-				WP_CLI::log( 'A validator for ' . $fieldName . ' does not exist, check the field name and field settings to see that they match.' );
+				throw new Exception( 'A validator for ' . $fieldName . ' does not exist, check the field name and field settings to see that they match.' );
 				continue;
 			}
 
@@ -208,8 +208,9 @@ class SafetyTeamsList {
 	/**
 	 * @return array
 	 */
-	private function getHeader() {
-		return $this->header;
+	private function getHeader($string = false) {
+
+		return $string ? '===' . implode(',', $this->header) . '|' : $this->header;
 	}
 
 	/**

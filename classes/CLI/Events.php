@@ -28,17 +28,14 @@ Class Events extends ProgrammeBase {
 			WP_CLI::error( '$this->flattenedEvents is empty, most likely ->execute wasn\'t called' );
 		}
 
-		// We've validated the data, no do something with it.
-
 		/**
 		 * @var $event EventDTO
 		 */
 		foreach ( $this->flattenedEvents as $event ) {
 
-			//WP_CLI::log( $event );
-		}
+			WP_CLI::log( $event );
 
-		WP_CLI::success( 'Success!!' );
+		}
 	}
 
 }

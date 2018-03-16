@@ -164,5 +164,6 @@ class ProgrammeBase {
 
 		return $eventsDataFlattened;
 	}
+	
 
 }

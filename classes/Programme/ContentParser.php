@@ -2,8 +2,10 @@
 
 namespace SSCMods;
 
-use WP_CLI;
-use Exception;
+use \WP_CLI;
+use \Exception;
+use \WP_Post;
+use \SSCMods\Fields\ValidatorException;
 
 /**
  * Idea, pass in a column scheme plan with validation rules for each column.
@@ -38,6 +40,11 @@ class ContentParser {
 	 */
 	private $safetyTeams;
 
+	/**
+	 * @var $line_errors array
+	 */
+	private $line_errors;
+
 
 	/**
 	 * @var array
@@ -65,7 +72,7 @@ class ContentParser {
 	 * @param RaceSeries $raceSeries
 	 * @param SafetyTeams $safetyTeams
 	 */
-	public function init( \WP_Post $post, SailType $sailType, RaceSeries $raceSeries, SafetyTeams $safetyTeams ) {
+	public function init( WP_Post $post, SailType $sailType, RaceSeries $raceSeries, SafetyTeams $safetyTeams ) {
 
 		if ( empty( trim( $post->post_content ) ) ) {
 			throw new Exception( '$post->post_content is empty' );
@@ -91,8 +98,9 @@ class ContentParser {
 	/**
 	 * @return array
 	 */
-	private function getHeader() {
-		return $this->header;
+	private function getHeader( $string = false ) {
+
+		return $string ? implode( ',', $this->header ) : $this->header;
 	}
 
 	/**
@@ -109,14 +117,15 @@ class ContentParser {
 	public function getData( Filter $filter ) {
 
 		$out = array(
-			'data'   => array(),
-			'errors' => array(),
+			'data' => array(),
 		);
 
 		$dataArray = explode( "\n", $this->content );
 
 		$line = 0;
 		foreach ( $dataArray as $dataLine ) {
+
+			$error_message = '';
 
 			if ( $line == 0 ) {
 				$this->setHeader( $dataLine );
@@ -132,7 +141,7 @@ class ContentParser {
 			$tmpData = explode( ",", $dataLine );
 
 			if ( count( $tmpData ) != $this->headerCount ) {
-				throw new Exception( 'Line ' . $line . ' column count mismatch, expected ' . $this->getHeaderCount() . ' columns. ' . $dataLine );
+				throw new Exception( 'Line ' . $line . ' column count mismatch, expected ' . $this->getHeaderCount() . ' columns. ' . "Header columns are: " . $this->getHeader( true ) . '. Data is: ' . $dataLine );
 			}
 
 			$i = 0;
@@ -142,35 +151,52 @@ class ContentParser {
 
 			try {
 
-				// @todo better exception handling so this works for web and CLI
+				$this->validateData( $data );
 
-				try {
-					$this->validateData( $data );
-				} catch ( Exception $e ) {
-					WP_CLI::log( $e->getMessage() );
+			} catch ( ValidatorException $e ) {
+
+				$error_message = sprintf( 'Field validation error line: %d %s', $line, $e->getMessage() );
+				if ( class_exists( 'WP_CLI' ) ) {
+					WP_CLI::log( $error_message );
+				} else {
+					$this->line_errors[$line] = array(
+						'line' => $line,
+						'error' => $error_message
+					);
+
 				}
+				continue;
+			}
 
-				try {
+			try {
 
-
-					/** @var $dto EventDTO */
-					$dto = new EventDTO( $line, $data, $this->sailType, $this->raceSeries, $this->safetyTeams );
-
-				} catch ( Exception $e ) {
-					WP_CLI::error( $e->getMessage() );
-				}
-
-				if ( ! $filter->filter( $dto ) ) {
-					continue;
-				}
-
-				$out['data'][ $dto->getDate() ][] = $dto;
+				/** @var $dto EventDTO */
+				$dto = new EventDTO( $line, $data, $this->sailType, $this->raceSeries, $this->safetyTeams );
 
 			} catch ( Exception $e ) {
-				$out['errors'][] = sprintf( 'Error line: %d %s', $line, $e->getMessage() );
+				if ( class_exists( 'WP_CLI' ) ) {
+					WP_CLI::log( $error_message );
+				} else {
+					$this->line_errors[$line] = array(
+						'line' => $line,
+						'error' => $error_message
+					);
+
+				}
+				continue;
 			}
+
+			if ( ! $filter->filter( $dto ) ) {
+				continue;
+			}
+
+			$out['data'][ $dto->getDate() ][] = $dto;
+
+
 			$line ++;
 		}
+
+		$out['errors'] = $this->line_errors;
 
 		return $out;
 	}
@@ -196,11 +222,12 @@ class ContentParser {
 
 			if ( ! $validator ) {
 
-				WP_CLI::log( 'A validator for ' . $fieldName . ' does not exist, check the field name and field settings to see that they match.' );
+				throw new Exception( 'A validator for ' . $fieldName . ' does not exist, check the field name and field settings to see that they match.' );
 				continue;
 			}
 
 			$validator->validate( $value );
+
 		}
 
 	}

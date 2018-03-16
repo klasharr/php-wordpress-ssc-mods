@@ -2,7 +2,8 @@
 
 namespace SSCMods\Fields;
 
-use Exception;
+
+require_once( SSC_MODS_PLUGIN_DIR . '/exceptions/ValidatorException.php' );
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit();
@@ -35,7 +36,7 @@ abstract class BaseField {
 		$this->data = $data;
 
 		if ( isset( $this->data['options'] ) && ! array( $this->data['options'] ) ) {
-			throw new Exception( 'options is not an array' );
+			throw new ValidatorException( 'options is not an array' );
 		}
 
 
@@ -53,7 +54,7 @@ abstract class BaseField {
 	protected function _validate( $value ) {
 
 		if ( $this->isRequired() && empty( $value ) ) {
-			throw new Exception( 'Data error in field ' . $this->data['field_name'] . ' requires value' );
+			throw new ValidatorException( 'Data error in field ' . $this->data['field_name'] . ' requires value' );
 		}
 
 		$this->stringHasValidLength( $value );
@@ -64,7 +65,7 @@ abstract class BaseField {
 
 		if ( $this->hasOptions() && ! empty( $value ) ) {
 			if ( ! $this->isValidOption( $value ) ) {
-				throw new Exception( 'Data error in field ' . $this->data['field_name'] . ' if present, expected one of "' . $this->getOptions( true ) . '" got "' . $value . '"' );
+				throw new ValidatorException( 'Data error in field ' . $this->data['field_name'] . ' if present, expected one of "' . $this->getOptions( true ) . '" got "' . $value . '"' );
 			}
 		}
 	}
@@ -83,7 +84,7 @@ abstract class BaseField {
 	protected function isValidOption( $value ) {
 
 		if ( empty( $this->options ) ) {
-			throw new Exception( 'Data error in field ' . $this->data['field_name'] . 'is missing options.' );
+			throw new ValidatorException( 'Data error in field ' . $this->data['field_name'] . 'is missing options.' );
 		}
 
 		return in_array( $value, $this->options );
@@ -111,7 +112,7 @@ abstract class BaseField {
 	public function getOptions( $string = false ) {
 
 		if ( empty( $this->options ) ) {
-			throw new Exception( 'There are no options for defined for this field type' );
+			throw new ValidatorException( 'There are no options for defined for this field type' );
 		}
 
 		if ( $string ) {
@@ -141,7 +142,7 @@ abstract class BaseField {
 
 	protected function stringHasValidLength( $value ) {
 		if ( isset( $this->data['max-length'] ) && ! empty( $value ) && strlen( $value ) > $this->data['max-length'] ) {
-			throw new Exception( 'Data error in field ' . $this->data['field_name'] . ' value too long, a max length of  ' . $this->data['max-length'] . ' is expected. ' . strlen( $value ) . ' given. Value: "' . $value . '"' );
+			throw new ValidatorException( 'Data error in field ' . $this->data['field_name'] . ' value too long, a max length of  ' . $this->data['max-length'] . ' is expected. ' . strlen( $value ) . ' given. Value: "' . $value . '"' );
 		}
 	}
 }

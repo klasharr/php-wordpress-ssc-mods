@@ -1,5 +1,11 @@
 <?php
 
+use SSCMods\SSCModsFactory;
+use SSCMods\NullFilter;
+use SSCMods\EventsPage;
+use SSCMods\FullEventsTable;
+use SSCMods\Day;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -9,10 +15,6 @@ require_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/display/FullEventsTable.
 require_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/display/EventsPage.php' );
 
 /**
- * Display sailing programme in place of post content for sailing content type.
- *
- * @todo simplify and harmonise with code used in the programme CLI
- *
  * @param $content
  *
  * @return string
@@ -24,60 +26,59 @@ function ssc_mods_display_sailing_programme( $content ) {
 	 */
 	global $post;
 
-	$out = '';
-
 	if ( is_singular() && in_array( get_post_type( $post ), array( 'sailing-programme' ) ) ) {
 
 		try {
 
-			$contentParser = \SSCMods\SSCModsFactory::getContentParser();
+			if ( $post_meta_fields = get_post_meta( $post->ID, 'fields', true ) ) {
+				$post->field_settings = parse_ini_string( $post_meta_fields, true );
+			}
+
+			$contentParser = SSCModsFactory::getContentParser();
 
 			$contentParser->init(
-				$post->post_content,
-				\SSCMods\SSCModsFactory::getSailType(),
-				\SSCMods\SSCModsFactory::getRaceSeries(),
-				\SSCMods\SSCModsFactory::getSafetyTeams()
+				$post,
+				SSCModsFactory::getSailType(),
+				SSCModsFactory::getRaceSeries(),
+				SSCModsFactory::getSafetyTeams()
 			);
 
-			$eventsData = $contentParser->getData( new \SSCMods\NullFilter() );
+			$eventsData = $contentParser->getData( new NullFilter() );
 
 		} catch ( Exception $e ) {
-			return '<strong>Exception: ' . $e->getMessage() . ', Line: ' . $e->getLine() . '</strong><br/>';
+			return 'There has been an error: ' . $e->getMessage() . ', Line: ' . $e->getLine() . '<br/>';
 		}
 
 
-		$out .= \SSCMods\EventsPage::getPageHead();
-		$out .= \SSCMods\EventsPage::displayErrors( $eventsData['errors'] );
-		$out .= \SSCMods\FullEventsTable::getCSS();
+		$out = EventsPage::getPageHead();
+		if ( ! empty( $eventsData['errors'] ) ) {
+			$out .= EventsPage::displayErrors( $eventsData['errors'] );
+		}
+		$out .= FullEventsTable::getCSS();
 
 		if ( $eventsData['data'] ) {
-			$out .= \SSCMods\FullEventsTable::getOpenTableTag();
-			$out .= \SSCMods\FullEventsTable::getHeader();
+			$out .= FullEventsTable::getOpenTableTag();
+			$out .= FullEventsTable::getHeader();
 
+			$line = 0;
 			foreach ( $eventsData['data'] as $date => $DTOArray ) {
-				$day = new \SSCMods\Day();
+				$day = new Day();
 				foreach ( $DTOArray as $DTO ) {
 					$day->addEvent( $DTO );
 				}
-				$out .= \SSCMods\FullEventsTable::getRow( $day );
+				$out .= FullEventsTable::getRow( $day, $line, $eventsData['errors'] );
+				$line ++;
 			}
 
-			$out .= \SSCMods\FullEventsTable::getClosingTag();
+			$out .= FullEventsTable::getClosingTag();
 		} else {
 			//$out .= EventsPage::displayNoResultsMessage();
 		}
-		$out .= \SSCMods\EventsPage::getPageFooter();
-
-		if ( ! empty( $eventsData['errors'] ) ) {
-
-			$out .= \SSCMods\EventsPage::displayErrors( $eventsData['errors'] );
-
-		}
+		$out .= EventsPage::getPageFooter();
 
 		return $out;
 	}
 
-	return $content;
 }
 
 add_filter( 'the_content', 'ssc_mods_display_sailing_programme' );

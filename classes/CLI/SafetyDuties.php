@@ -2,8 +2,8 @@
 
 namespace SSCMods;
 
-Use WP_CLI;
-Use Exception;
+Use \WP_CLI;
+Use \Exception;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit();

@@ -2,6 +2,8 @@
 
 namespace SSCMods\Fields;
 
+use WP_CLI;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit();
 }
@@ -16,7 +18,21 @@ class DateField extends BaseField implements FieldValidator {
 	}
 
 	public function validate( $value ) {
-		parent::_validate( $value );
+
+		if ( empty( trim( $value ) ) ) {
+			throw new ValidatorException( 'Date field validation failed, no data' );
+		}
+
+		$parts = explode('/', $value);
+
+		if ( ! checkdate( $parts[0], $parts[1], $parts[2] ) ) {
+			throw new ValidatorException('Date field validation failed, format is valid, invalid date. Got: ' . $value );
+		}
+		
+		if( ! $d = \DateTime::createFromFormat( $this->data['format'], $value ) ) {
+			throw new ValidatorException('Date field validation failed, expected format: '. $this->data['format'] . ', value is: ' . $value );
+		}
+
 	}
 
 }
