@@ -43,7 +43,7 @@ class ContentParser {
 	/**
 	 * @var $line_errors array
 	 */
-	private $line_errors;
+	private $line_errors = array();
 
 
 	/**
@@ -118,6 +118,7 @@ class ContentParser {
 
 		$out = array(
 			'data' => array(),
+			'errors' => array(),
 		);
 
 		$dataArray = explode( "\n", $this->content );

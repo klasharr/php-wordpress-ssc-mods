@@ -1,0 +1,164 @@
+Day,Date,Event,Time,Team,Note,IsJunior
+Sun,3/18/18,Winter Fun Sailing,1100,,,
+Sat,3/24/18,New Members Induction,1100,,,
+Sun,3/25/18,BST STARTS - CLOCKS FORWARD 1 HOUR,,,,
+Sun,3/25/18,Boat move and beach clean,1100,,,
+Sat,3/31/18,The Opener,1400,3,,
+Sun,4/1/18,Spring Series 1 of 10 - Spring Berthing starts,1100,4,,
+Tue,4/3/18,Adult Training 1,1800,,,
+Thu,4/5/18,Spring Evening Series 1 of 10,1830,D,,
+Sat,4/7/18,Junior Training 1,0830,,,1
+Sun,4/8/18,Spring Series 2 of 10,1100,5,,
+Tue,4/10/18,Adult Training 2,1800,,,
+Thu,4/12/18,Spring Evening Series 2 of 10,1830,E,,
+Sat ,4/14/18,Junior Training 2,0830,,,1
+Sun,4/15/18,Spring Series 3 of 10,1100,6,,
+Tue,4/17/18,Adult Training 3,1800,,,
+Thu,4/19/18,Spring Evening Series 3 of 10,1830,F,,
+Sat,4/21/18,Junior Training 3,0830,,,1
+Sun,4/22/18,Spring Series 4 of 10,1100,7,,
+Tue,4/24/18,Adult Training 4,1800,,,
+Thu,4/26/18,Spring Evening Series 4 of 10,1830,A,,
+Sat,4/28/18,Junior Training 4,0830,,,1
+Sun,4/29/18,Spring Series 5 of 10,1100,8,,
+Tue,5/1/18,Adult Training 5,1800,,,
+Thu,5/3/18,Spring Evening Series 5 of 10,1830,H,,
+Sat,5/5/18,Junior Training 5,0830,,,1
+Sat,5/5/18,Elizabeth Cup - Bournemouth ,1400,9,,
+Sun,5/6/18,Spring Series 6 of 10,1100,2,,
+Tue,5/8/18,Adult Training 6,1800,,,
+Thu,5/10/18,Spring Evening Series 6 of 10,1830,J,,
+Sat,5/12/18,Junior Training 6,0830,,,1
+Sat,5/12/18,James Day Cup - Club's Anniversary,1400,1,,
+Sun,5/13/18,Spring Series 7 of 10,1100,3,,
+Tue,5/15/18,Adult Training 7,1800,,,
+Thu,5/17/18,Spring Evening Series 7 of 10 - LATER START,1900,G,,
+Sat,5/19/18,Junior Training 7,0830,,,1
+Sun,5/20/18,Spring Series 8 of 10,1100,4,Kayak Fishing ,
+Tue,5/22/18,Adult Training 8,1800,,,
+Thu,5/24/18,Spring Evening Series 8 of 10,1900,B,,
+Sat,5/26/18,Junior Training 8 ,0830,,,1
+Sun,5/27/18,1974 Cup - 2 races on a BH weekend,1100,5,,
+Mon ,5/28/18,1974 Cup - 1 race  - continued,1100,6,,
+Tue,5/29/18,Adult Training 9,1800,,,
+Thu,5/31/18,Spring Evening Series 9 of 10,1900,C,,
+Sat,6/2/18,Junior Training 9,0830,,,1
+Sat,6/2/18,Coronation Cup - to mark the Coronation,1400,7,,
+Sun,6/3/18,Spring Series 9 of 10,1100,8,,
+Tue,6/5/18,Adult Training 10,1800,,,
+Thu,6/7/18,Spring Evening Series 10 of 10,1900,D,,
+Sat,6/9/18,Junior Training 10,0830,,,1
+Sat,6/9/18,Cruise to Studland Middle Beach,1030,,,
+Sun,6/10/18,Spring Series 10 of 10 ,1100,9,,
+Tue,6/12/18,Adult Training 11,1800,,,
+Thu,6/14/18,Summer Evening Series 1 of  7,1900,E,,
+Sat,6/16/18,Junior Training 11,0830,,,1
+Sat,6/17/18,Family Watersports and Summer Disco,TBA,,,1
+Sun,6/17/18,Summer Series 1 of 7  & Owerdale over 60s,1100,1,,
+Tue,6/19/18,Adult Training 12,1800,,,
+Thu,6/21/18,Summer Evening Series 2 of  7,1900,F,,
+Sat,6/23/18,Junior Training 12,0830,,,1
+Sat,6/23/18,Fleming Trophy - Durlston Bay,1400,2,,
+Sun,6/24/18,Summer Series 2 of 7,1100,3,,
+Tue,6/26/18,Adult Training 13,1800,,,
+Thu,6/28/18,Summer Evening Series 3 of  7,1900,G,,
+Sat,6/30/18,Junior Training 13,0830,,,1
+Sun,7/1/18,Summer Series 3 of 7,1100,5,,
+Tue,7/3/18,Adult Training 14,1800,,,
+Thu,7/5/18,Summer Evening Series 4 of  7,1900,H,,
+Sat,7/7/18,Commodores Cup - Peveril Ledge Buoy,1400,4,,
+Sun,7/8/18,Summer Series 4 of 7,1100,6,,
+Tue,7/10/18,Adult Training 15,1800,,,
+Thu,7/12/18,Summer Evening Series 5 of  7,1900,J,,
+Sat,7/14/18,Day Cruise to Sheps Hollow,1030,,,
+Sun,7/15/18,Summer Series 5 of 7,1100,7,,
+Tue,7/17/18,Adult Training 16,1800,,,
+Thu,7/19/18,Summer Evening Series 6 of  7,1900,A,,
+Sat,7/21/18,Knoll Cup - Studland Bay,1400,8,,
+Sun,7/22/18,Summer Series 6 of 7,1100,9,,
+Tue,7/24/18,Adult Training 17,1800,,,
+Thu,7/26/18,Summer Evening Series 7 of  7,1900,B,,
+Sat,7/28/18,Adult Trainee Regatta &Ladies Cup (for all),1030,2,Carn-,
+Sun,7/29/18,Summer Series 7 of 7,1100,1,ival,
+Tue,7/31/18,Adult Training 18,1800,,,
+Thu,8/2/18,Summer Evening Carnival Race,1900,C,,
+Sat,8/4/18,Chellingworth Cup - Pursuit Race,1400,4,,
+Sun,8/5/18,Summer Holiday Series 1 of 6 - Back to Back,1030,3,,
+Mon ,8/6/18,Junior Week starts,0930,,JNRS,1
+Tue,8/7/18,3 day Cruise to Poole Harbour ,1030,,,
+Tue,8/7/18,Adult Training 19,1800,,,
+Thu,8/9/18,Twilight Series 1 of 7,1830,D,,
+Fri,8/10/18,Junior Week final day,0930,,R,1
+Sun,8/12/18,Summer Holiday Series 2 of 6 - Back to Back,1030,5,N,
+Tue,8/14/18,RNLI Challenge Event - Jnrs & Adult Trainees,1800,,L,1
+Tue,8/14/18,Adult Training 20,1800,,I,
+Thu,8/16/18,Twilight Series 2 of 7 & RNLI Pennant,1830,E,,
+Sat,8/18/18,Rees Cup - Poole Bar Buoy ,1400,6,,
+Sun,8/19/18,Summer Holiday Series 3 of 6  - Back to Back,1030,7,,
+Tue,8/21/18,Reserve date for 3 day Poole Harbour Cruise,1030,,,
+Tue,8/21/18,Adult Training 21,1800,,,
+Thu,8/23/18,Twilight Series 3 of 7 & ,1830,F,,
+Sat,8/25/18,Cruise to Sheps Hollow,TBN,,,
+Sun,8/26/18,Summer Holiday Series 4 of 6 - Back to Back,1030,8,,
+Tue,8/28/18,Adult Training 22,1800,,,
+Thu,8/30/18,Twilight Series 4 of 7,1830,G,Air,
+Sat,9/1/18,Bent /Macdona Single Handed Cups,1400,9,Festival,
+Sun,9/2/18,Summer Holiday Series 5 of 6 - Back to Back,1030,1,,
+Tue,9/4/18,Adult Training 23,1800,,,
+Thu,9/6/18,Twilight Series 5 of 7,1830,H,,
+Sat,9/8/18,Cruise to Studland ,1030,,Folk,
+Sun,9/9/18,Summer Holiday Series 6 of 6 - Back to Back,1030,2,Festival,
+Tue,9/11/18,Adult Training 24 - Last one,1800,,,
+Thu,9/13/18,Twilight Series 6 of 7,1830,J,,
+Sat,9/15/18,Cup Reserve 1/ Race Training,1400,3,,
+Sun,9/16/18,Autumn Series 1 of 7 ,1100,4,,
+Thu,9/20/18,Twilight Series 7 of 7,1830,A,,
+Sat,9/22/18,Cup Reserve 2/ Race Training,1400,5,,
+Sun,9/23/18,Autumn Series 2 of 7,1100,6,,
+Sun,9/30/18,Autumn Series 3 of 7,1100,7,,
+Sat,10/6/17,Cup Reserve 3/ Race Training,1100,8,,
+Sun,10/7/18,Autumn Series 4 of 7,1100,9,,
+Sun,10/14/18,Autumn Series 5 of 7,1100,1,,
+Sun,10/21/18,Autumn Series 6 of 7,1100,2,,
+Sun,10/28/18,B.S.T ENDS - CLOCKS BACK ONE HOUR,,,,
+Sun,10/28/18,Autumn Series 7 of 7,1100,3,,
+Thu,11/1/18,Winter Berthing starts (payment due),,,,
+Sun,11/4/18,Boat move and Beach Clean ,1100,,,
+Sun ,11/11/18,Winter Fun Sailing,1100,,,
+Sun,11/18/18,Winter Fun Sailing,1100,,,
+Sat,11/24/18,AGM,1100,,,
+Sun,11/25/18,Active Sailors Meeting,1100,,,
+Sun,12/2/18,Winter Fun Sailing,1100,,,
+Sun,12/9/18,Winter Fun Sailing,1100,,,
+Sun,12/16/18,Winter Fun Sailing,1100,,,
+
+
+
+[Day]
+type = string
+options = Sat,Sun,Thu,Tue,Mon,Fri
+
+[Date]
+type = date
+format = d/m/Y
+
+[Event]
+type = string
+max-length = 60
+required = true
+
+[Time]
+type = string
+options = 1100,1030,1830,1900,1400,1800,0830,TBA,0930
+
+[Team]
+type = string
+options = A,B,C,D,E,F,G,H,J,1,2,3,4,5,6,7,8,9
+
+[Note]
+type = string
+max-length = 45
+
+[IsJunior]
+type = int
+options = 1

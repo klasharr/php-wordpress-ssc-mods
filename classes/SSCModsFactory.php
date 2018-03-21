@@ -15,6 +15,7 @@ require_once( SSC_MODS_PLUGIN_DIR . '/classes/FieldValidatorManager.php' );
 require_once( SSC_MODS_PLUGIN_DIR . '/interfaces/FieldValidator.php' );
 require_once( SSC_MODS_PLUGIN_DIR . '/exceptions/ValidatorException.php' );
 require_once( SSC_MODS_PLUGIN_DIR . '/classes/SafetyTeamsList.php' );
+require_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/SailingEventForm.php' );
 
 class SSCModsFactory {
 
@@ -23,6 +24,13 @@ class SSCModsFactory {
 	 */
 	public static function getSafetyTeams() {
 		return new \SSCMods\SafetyTeams();
+	}
+
+	/**
+	 * @return SafetyTeams
+	 */
+	public static function getSafetyEventForm( SafetyTeams $safetyTeams, SailType $sailType ) {
+		return new \SSCMods\SailingEventForm( $safetyTeams, $sailType) ;
 	}
 
 	/**
