@@ -11,6 +11,7 @@ require_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/NullFilter.php' );
 require_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/EventDTO.php' );
 require_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/Day.php' );
 require_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/SafetyTeamFilter.php' );
+require_once( SSC_MODS_PLUGIN_DIR . '/classes/Programme/TrainingFilter.php' );
 require_once( SSC_MODS_PLUGIN_DIR . '/classes/FieldValidatorManager.php' );
 require_once( SSC_MODS_PLUGIN_DIR . '/interfaces/FieldValidator.php' );
 require_once( SSC_MODS_PLUGIN_DIR . '/exceptions/ValidatorException.php' );
@@ -60,6 +61,10 @@ class SSCModsFactory {
 
 	public static function getSafetyTeamFilter() {
 		return new \SSCMods\SafetyTeamFilter;
+	}
+
+	public static function getTrainingFilter() {
+		return new \SSCMods\TrainingFilter;
 	}
 
 	public static function getFieldValidatorManager( \WP_Post $post ) {

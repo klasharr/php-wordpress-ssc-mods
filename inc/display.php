@@ -79,6 +79,8 @@ function ssc_mods_display_sailing_programme( $content ) {
 		return $out;
 	}
 
+	return $content;
+
 }
 
 add_filter( 'the_content', 'ssc_mods_display_sailing_programme' );
